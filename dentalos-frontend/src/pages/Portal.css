@@ -1,0 +1,6 @@
+.portal { min-height: 100vh; background: var(--background); }
+.portal-head { display: flex; justify-content: space-between; align-items: center; padding: 14px 28px; background: var(--surface); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 20; }
+.portal-body { max-width: 960px; margin: 0 auto; padding: 32px 20px 60px; }
+.portal-body h1 { font-size: 28px; }
+.portal-next { display: flex; align-items: center; gap: 14px; }
+.portal-next > div { flex: 1; }

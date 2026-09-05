@@ -1,0 +1,26 @@
+.odo { position: relative; background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 22px; box-shadow: var(--shadow); }
+.odo-controls { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-bottom: 18px; }
+.odo-toggle { display: inline-flex; background: var(--surface-secondary); border: 1px solid var(--border); border-radius: 999px; padding: 3px; }
+.odo-toggle button { border: 0; background: transparent; border-radius: 999px; padding: 5px 13px; font: inherit; font-size: 12px; font-weight: 700; color: var(--text-secondary); cursor: pointer; transition: all 0.16s ease; }
+.odo-toggle button.on { background: var(--primary); color: #fff; }
+.odo-grid { display: flex; flex-wrap: wrap; gap: 7px; justify-content: center; }
+.odo-tooth { position: relative; width: 44px; height: 50px; border: 1.5px solid var(--border-strong); border-radius: 10px 10px 14px 14px; background: var(--surface); color: var(--text-secondary); font: inherit; font-size: 11px; font-weight: 700; cursor: pointer; transition: transform 0.16s ease, border-color 0.16s ease, box-shadow 0.16s ease, background 0.16s ease; }
+.odo-tooth:hover { transform: translateY(-3px); border-color: var(--primary-light); z-index: 1; }
+.odo-tooth.sel { border-color: var(--primary); background: var(--primary-soft); color: var(--primary); box-shadow: 0 0 0 3px var(--primary-soft); }
+.odo-tooth.c-caries { border-color: var(--danger); }
+.odo-tooth.c-filled { border-color: var(--info); }
+.odo-tooth.c-root-canal { border-color: var(--violet); }
+.odo-tooth.c-crown { border-color: var(--warning); background: var(--warning-soft); }
+.odo-tooth.c-caries::after, .odo-tooth.c-filled::after, .odo-tooth.c-root-canal::after { content: ''; position: absolute; right: 5px; top: 5px; width: 6px; height: 6px; border-radius: 50%; }
+.odo-tooth.c-caries::after { background: var(--danger); }
+.odo-tooth.c-filled::after { background: var(--info); }
+.odo-tooth.c-root-canal::after { background: var(--violet); }
+.odo-info { margin-top: 16px; display: flex; flex-direction: column; gap: 3px; background: var(--surface-secondary); border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px; }
+.odo-info b { font-size: 14px; }
+.odo-info span { font-size: 12.5px; color: var(--text-secondary); }
+.odo-info em { font-style: normal; font-weight: 700; color: var(--primary); }
+.odo-info i { font-style: normal; font-size: 11px; color: var(--text-muted); }
+.odo-legend { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 14px; font-size: 11px; color: var(--text-secondary); }
+.odo-legend span { display: inline-flex; align-items: center; gap: 5px; }
+.odo-legend i { width: 8px; height: 8px; border-radius: 50%; }
+@media (max-width: 960px) { .odo-tooth { width: 34px; height: 40px; font-size: 10px; } }

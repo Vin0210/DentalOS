@@ -1,0 +1,20 @@
+.pring { display: inline-flex; flex-direction: column; align-items: center; gap: 8px; position: relative; }
+.pring-center { position: absolute; top: 0; left: 50%; transform: translateX(-50%); height: 100%; display: flex; align-items: center; gap: 2px; aspect-ratio: 1; justify-content: center; pointer-events: none; }
+.pring-center b { font-size: 19px; font-weight: 800; letter-spacing: -0.02em; }
+.pring-center span { color: var(--text-secondary); font-size: 12px; font-weight: 600; }
+.pring-meta { text-align: center; }
+.pring-meta b { display: block; font-size: 13px; }
+.pring-meta span { font-size: 12px; color: var(--text-secondary); }
+
+/* Gentle float for decorative elements (transform only) */
+@keyframes floaty { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+@keyframes floaty-sm { 0%, 100% { transform: translateY(0) rotate(var(--tilt, 0deg)); } 50% { transform: translateY(-7px) rotate(var(--tilt, 0deg)); } }
+@keyframes drift { 0%, 100% { transform: translate(0, 0); } 33% { transform: translate(6px, -8px); } 66% { transform: translate(-5px, 5px); } }
+@keyframes pulse-glow { 0%, 100% { opacity: 0.55; } 50% { opacity: 1; } }
+@keyframes spin-slow { to { transform: rotate(360deg); } }
+
+/* Global reduced-motion guard: kill decorative loops, keep opacity fades */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+  .skeleton { animation: none; }
+}

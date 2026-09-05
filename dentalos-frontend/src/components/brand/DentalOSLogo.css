@@ -1,0 +1,22 @@
+/* DentalOS brand component — symbol + wordmark, one instance reused everywhere */
+.dos-logo { position: relative; display: inline-flex; align-items: center; gap: var(--dos-gap, 10px); transition: gap 0.2s ease; line-height: 1; vertical-align: middle; }
+.dos-mark { position: relative; display: inline-flex; flex-shrink: 0; }
+.dos-mark svg { display: block; transform-origin: center; }
+.dos-glow { position: absolute; inset: -45%; border-radius: 50%; background: radial-gradient(circle, rgba(20, 184, 166, 0.5), transparent 65%); opacity: 0; pointer-events: none; }
+.dos-word { display: inline-flex; align-items: baseline; font-family: var(--font, 'Inter', 'Manrope', system-ui, sans-serif); font-weight: 800; letter-spacing: -0.02em; line-height: 1; white-space: nowrap; max-width: 220px; overflow: hidden; transition: opacity 0.2s ease, transform 0.2s ease, max-width 0.2s ease; }
+.dos-word-off { opacity: 0; transform: translateX(-6px); max-width: 0; }
+
+/* Entrance sequence (≈900ms): mark scales in → trace draws → node pops → glow pulse → wordmark */
+.dos-animated .dos-mark svg { animation: dos-mark-in 0.55s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.dos-animated .dos-trace { stroke-dasharray: 12; animation: dos-draw 0.35s ease-out 0.32s both; }
+.dos-animated .dos-node { animation: dos-pop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) 0.48s both; transform-box: fill-box; transform-origin: center; }
+.dos-animated .dos-word { animation: dos-word-in 0.4s ease 0.52s both; }
+.dos-animated .dos-glow { animation: dos-glow 0.85s ease 0.3s both; }
+@keyframes dos-mark-in { from { opacity: 0; transform: scale(0.86); } to { opacity: 1; transform: scale(1); } }
+@keyframes dos-draw { from { stroke-dashoffset: 12; } to { stroke-dashoffset: 0; } }
+@keyframes dos-pop { from { opacity: 0; transform: scale(0); } to { opacity: 1; transform: scale(1); } }
+@keyframes dos-word-in { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes dos-glow { 0% { opacity: 0; transform: scale(0.7); } 55% { opacity: 0.55; } 100% { opacity: 0; transform: scale(1.15); } }
+@media (prefers-reduced-motion: reduce) {
+  .dos-animated .dos-mark svg, .dos-animated .dos-trace, .dos-animated .dos-node, .dos-animated .dos-word, .dos-animated .dos-glow { animation: none !important; }
+}

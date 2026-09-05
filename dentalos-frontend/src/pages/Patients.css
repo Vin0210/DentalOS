@@ -1,0 +1,22 @@
+.ptoolbar { display: flex; gap: 10px; padding: 14px 16px; border-bottom: 1px solid var(--border); flex-wrap: wrap; }
+.plink { display: inline-flex; align-items: center; gap: 10px; color: var(--text-primary); font-weight: 600; }
+.plink:hover { text-decoration: none; color: var(--primary); }
+.pager { display: flex; align-items: center; justify-content: center; gap: 14px; padding: 14px; }
+.profile-head { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 22px; display: flex; gap: 18px; align-items: flex-start; flex-wrap: wrap; }
+.profile-id { display: flex; gap: 16px; align-items: center; flex: 1; min-width: 240px; }
+.profile-id h1 { font-size: 22px; }
+.profile-facts { display: flex; gap: 22px; margin-top: 8px; flex-wrap: wrap; }
+.profile-facts div { display: flex; flex-direction: column; }
+.profile-facts span { font-size: 11.5px; color: var(--text-secondary); text-transform: uppercase; font-weight: 700; letter-spacing: 0.05em; }
+.profile-facts b { font-size: 14px; }
+.profile-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.journey { margin-bottom: 18px; }
+.journey-track { height: 6px; border-radius: 4px; background: var(--surface-secondary); overflow: hidden; }
+.journey-track i { display: block; height: 100%; border-radius: 4px; background: linear-gradient(90deg, var(--primary-light), var(--primary)); }
+.journey-steps { display: flex; justify-content: space-between; margin-top: 6px; font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.03em; flex-wrap: wrap; gap: 4px; }
+.journey-steps .done { color: var(--primary); }
+.info-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.info-grid div { background: var(--surface-secondary); border-radius: 10px; padding: 10px 12px; }
+.info-grid span { font-size: 11px; color: var(--text-secondary); text-transform: uppercase; font-weight: 700; }
+.info-grid b { display: block; font-size: 13.5px; margin-top: 2px; font-weight: 600; }
+@media (max-width: 760px) { .info-grid { grid-template-columns: 1fr 1fr; } }

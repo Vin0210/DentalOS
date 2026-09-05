@@ -1,0 +1,30 @@
+/* Full-bleed hero visual — blob bleeds off the section edges (clipped by .lp-hero) */
+.hero-visual { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
+
+/* organic blob backdrop */
+.hero-blob { position: absolute; pointer-events: none; }
+.hero-blob.b1 { right: -16%; top: -22%; width: 96%; height: 138%; background: linear-gradient(160deg, #2dd4bf 0%, #14b8a6 40%, #0f766e 100%); border-radius: 53% 47% 46% 54% / 42% 52% 48% 58%; transform: rotate(8deg); }
+.hero-blob.b2 { left: -6%; bottom: -26%; width: 56%; height: 80%; background: linear-gradient(160deg, #99f6e4, #2dd4bf); border-radius: 55% 45% 40% 60% / 58% 42% 58% 42%; transform: rotate(-8deg); }
+
+/* tooth */
+.hero-tilt { position: relative; width: clamp(380px, 40vw, 660px); transform-style: preserve-3d; z-index: 2; }
+.hero-float { position: relative; }
+.hero-tooth-svg { display: block; width: 100%; filter: drop-shadow(0 34px 48px rgba(15, 23, 42, 0.3)); }
+
+/* hotspots: ring + connector line + rotated label */
+.hero-hotspot { position: absolute; width: 36px; height: 36px; margin: -18px 0 0 -18px; border: 0; padding: 0; background: transparent; cursor: pointer; }
+.hs-ring { position: absolute; inset: 0; border: 1.5px solid rgba(255, 255, 255, 0.95); border-radius: 50%; box-shadow: 0 0 0 6px rgba(255, 255, 255, 0.14); transition: transform 0.2s ease; }
+.hs-ring::after { content: ''; position: absolute; inset: 13px; background: #fff; border-radius: 2px; }
+.hero-hotspot:hover .hs-ring, .hero-hotspot:focus-visible .hs-ring { transform: scale(1.15); }
+.hs-line { position: absolute; left: 50%; margin-left: -0.5px; width: 1px; height: 46px; background: rgba(255, 255, 255, 0.85); }
+.side-up .hs-line { bottom: 100%; }
+.side-down .hs-line { top: 100%; }
+.hs-label { position: absolute; left: 50%; writing-mode: vertical-rl; white-space: nowrap; font-size: 9px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255, 255, 255, 0.95); }
+.side-up .hs-label { bottom: calc(100% + 48px); transform: translateX(-50%); }
+.side-down .hs-label { top: calc(100% + 48px); transform: translateX(-50%); }
+
+/* tooltip */
+.hero-tip-anchor { position: absolute; transform: translate(-50%, -118%); z-index: 7; pointer-events: none; }
+.hero-tip { display: flex; flex-direction: column; gap: 1px; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 9px 12px; box-shadow: var(--shadow-lg); white-space: nowrap; }
+.hero-tip b { font-size: 13px; color: var(--text-primary); }
+.hero-tip span { font-size: 11.5px; color: var(--text-secondary); }

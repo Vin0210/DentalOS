@@ -1,0 +1,12 @@
+.lp-journey { padding-top: 48px; }
+.journey { position: relative; display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; margin-top: 26px; }
+.journey-line-bg, .journey-line { position: absolute; top: 21px; left: 8%; right: 8%; height: 2px; border-radius: 2px; }
+.journey-line-bg { background: var(--border); }
+.journey-line { background: linear-gradient(90deg, var(--primary-light), var(--violet)); transform-origin: left; }
+.journey-step { position: relative; display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center; }
+.journey-step b { width: 42px; height: 42px; border-radius: 50%; background: var(--surface); border: 2px solid var(--primary-light); color: var(--primary); display: inline-flex; align-items: center; justify-content: center; font-size: 13px; position: relative; z-index: 1; }
+.journey-step span { font-size: 12.5px; font-weight: 700; color: var(--text-primary); }
+@media (max-width: 900px) {
+  .journey { grid-template-columns: repeat(3, 1fr); row-gap: 20px; }
+  .journey-line-bg, .journey-line { display: none; }
+}
