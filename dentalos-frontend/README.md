@@ -1,16 +1,33 @@
-# React + Vite
+# DentalOS — Frontend (React + Vite)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+The web client for DentalOS. Built with **React 19**, **Vite**, **React Router 7**, **Framer Motion** and **Recharts**.
 
-Currently, two official plugins are available:
+## Setup
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+```bash
+npm install
+npm run dev
+```
 
-## React Compiler
+> The dev server proxies `/api` → `http://localhost:8000`. Start the Laravel API first.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Scripts
 
-## Expanding the ESLint configuration
+```bash
+npm run dev      # dev server
+npm run build    # production build (outputs to dist/)
+npm run lint     # eslint
+npm run preview  # preview the production build
+```
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Stack
+
+- **React 19** + **Vite 8**
+- **Framer Motion** — animations, scroll storytelling, page transitions
+- **Lucide** — icon system
+- **Recharts** — dashboard charts
+- **Axios** — API client
+
+## Demo accounts
+
+See the [root README](../README.md#demo-accounts) for role-based demo logins (all password `password`).
