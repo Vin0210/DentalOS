@@ -23,5 +23,7 @@ RUN composer dump-autoload --optimize \
 
 EXPOSE 8000
 
-# Render injects $PORT. Migrate on boot, then serve.
-CMD sh -c "php artisan config:clear && php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=\${PORT:-8000}"
+RUN chmod +x docker-entrypoint.sh
+
+# Render injects $PORT. Migrate on boot, auto-seed if empty, then serve.
+CMD ["sh", "docker-entrypoint.sh"]
