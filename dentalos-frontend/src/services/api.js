@@ -5,7 +5,7 @@ const API_BASE = (import.meta.env.VITE_API_URL || '/api').replace(/\/$/, '')
 const api = axios.create({
   baseURL: API_BASE,
   headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
-  timeout: 15000,
+  timeout: 90000, // free-tier cold starts (Render sleeps) can take ~60s to wake
 })
 
 export function setToken(token) {
