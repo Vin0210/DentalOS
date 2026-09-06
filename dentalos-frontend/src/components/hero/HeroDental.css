@@ -9,7 +9,15 @@
 /* tooth */
 .hero-tilt { position: relative; width: clamp(380px, 40vw, 660px); transform-style: preserve-3d; z-index: 2; }
 .hero-float { position: relative; }
-.hero-tooth-svg { display: block; width: 100%; filter: drop-shadow(0 34px 48px rgba(15, 23, 42, 0.3)); }
+/* real tooth render — organic blob crop + soft radial fade melts the dark
+   capture background into the blobs (no blend modes: transform-safe) */
+.hero-tooth-img { display: block; width: 100%; aspect-ratio: 1 / 1; object-fit: cover; border-radius: 48% 52% 55% 45% / 52% 48% 52% 48%; -webkit-mask-image: radial-gradient(ellipse 75% 75% at 50% 46%, #000 60%, transparent 82%); mask-image: radial-gradient(ellipse 75% 75% at 50% 46%, #000 60%, transparent 82%); }
+
+/* entrance is pure CSS, not JS-driven: the tooth is visible by default and can
+   never get stuck at opacity 0 if script animation stalls or is throttled */
+.hero-enter { animation: hero-in 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.15s backwards; }
+@keyframes hero-in { from { opacity: 0; transform: scale(0.94); } to { opacity: 1; transform: scale(1); } }
+@media (prefers-reduced-motion: reduce) { .hero-enter { animation: none; } }
 
 /* hotspots: ring + connector line + rotated label */
 .hero-hotspot { position: absolute; width: 36px; height: 36px; margin: -18px 0 0 -18px; border: 0; padding: 0; background: transparent; cursor: pointer; }

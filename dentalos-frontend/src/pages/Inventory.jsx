@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react'
-import { AlertTriangle, PackagePlus } from 'lucide-react'
+import { AlertTriangle, PackagePlus, Search } from 'lucide-react'
 import api from '../services/api.js'
 import { demoInventory } from '../services/mock.js'
 import { peso } from '../utils/format.js'
-import { Button, Card, EmptyState, Field, Input, Modal, Select, StatusBadge } from '../components/ui/Ui.jsx'
+import { Badge, Button, Card, EmptyState, Field, Input, ListRow, Modal, Select, StatusBadge } from '../components/ui/Ui.jsx'
 import { useTheme } from '../context/ThemeContext.jsx'
 
 export default function Inventory() {
@@ -53,13 +53,13 @@ export default function Inventory() {
   return (
     <div className="page">
       <div className="page-head">
-        <div><h1 className="page-title">Inventory</h1><p className="page-sub">{rows.filter((r) => r.is_low_stock ?? r.quantity <= r.min_stock).length} low-stock alerts</p></div>
+        <div><p className="eyebrow">Inventory & suppliers</p><h1 className="page-title">Inventory</h1><p className="page-sub">{rows.filter((r) => r.is_low_stock ?? r.quantity <= r.min_stock).length} low-stock alerts</p></div>
         <Button icon={<PackagePlus size={15} />} onClick={() => setOpen(true)}>Add item</Button>
       </div>
 
       <Card pad={false}>
         <div className="ptoolbar">
-          <div className="search-input"><input className="input" placeholder="Search SKU or name…" value={search} onChange={(e) => setSearch(e.target.value)} aria-label="Search inventory" /></div>
+          <div className="search-input"><Search size={15} /><Input placeholder="Search SKU or name…" value={search} onChange={(e) => setSearch(e.target.value)} aria-label="Search inventory" /></div>
           <div className="seg">
             {[['', 'All'], ['low', 'Low stock']].map(([v, l]) => <button key={v} className={filter === v ? 'active' : ''} onClick={() => setFilter(v)}>{l}</button>)}
           </div>
@@ -73,11 +73,11 @@ export default function Inventory() {
                 <tr key={it.id}>
                   <td><b>{it.name}</b><p className="small muted">{it.category?.name} · per {it.unit}</p></td>
                   <td className="muted">{it.sku}</td>
-                  <td><b style={{ color: low ? 'var(--danger)' : undefined }}>{it.quantity} {it.unit}</b></td>
+                  <td><b className={low ? 'text-danger' : undefined}>{it.quantity} {it.unit}</b></td>
                   <td className="muted">{it.min_stock}</td>
                   <td>{peso(it.cost)}</td><td>{peso(it.price)}</td>
-                  <td>{low ? <span className="badge danger">Low stock</span> : <span className="badge success">OK</span>}</td>
-                  <td><button className="btn secondary sm" onClick={() => setAdjust(it)}>Adjust</button></td>
+                  <td>{low ? <Badge tone="danger">Low stock</Badge> : <Badge tone="success">OK</Badge>}</td>
+                  <td><Button variant="secondary" size="sm" onClick={() => setAdjust(it)}>Adjust</Button></td>
                 </tr>
               )
             })}</tbody>
@@ -86,7 +86,7 @@ export default function Inventory() {
       </Card>
 
       <Card title="Suppliers" subtitle="Purchase history & reordering">
-        {suppliers.map((s) => <div key={s.id} className="between" style={{ padding: '8px 0', borderBottom: '1px solid var(--border)' }}><div><b>{s.name}</b><p className="small muted">{s.phone || s.email || '—'}</p></div><StatusBadge value="active" /></div>)}
+        {suppliers.map((s) => <ListRow key={s.id}><div><b>{s.name}</b><p className="sub">{s.phone || s.email || '—'}</p></div><StatusBadge value="active" /></ListRow>)}
       </Card>
 
       <Modal open={open} title="Add inventory item" onClose={() => setOpen(false)}>

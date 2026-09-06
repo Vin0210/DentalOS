@@ -3,7 +3,7 @@ import { CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YA
 import api from '../services/api.js'
 import { demoDashboard } from '../services/mock.js'
 import { peso } from '../utils/format.js'
-import { Card, Select, SkeletonList, StatCard } from '../components/ui/Ui.jsx'
+import { Card, ListRow, Select, SkeletonList, StatCard } from '../components/ui/Ui.jsx'
 
 export default function Reports() {
   const [fin, setFin] = useState(null)
@@ -29,21 +29,21 @@ export default function Reports() {
   return (
     <div className="page">
       <div className="page-head">
-        <div><h1 className="page-title">Reports</h1><p className="page-sub">Financial, appointment, treatment & inventory analytics</p></div>
-        <Select value={range} onChange={(e) => setRange(e.target.value)} style={{ width: 170 }}>
+        <div><p className="eyebrow">Analytics</p><h1 className="page-title">Reports</h1><p className="page-sub">Financial, appointment, treatment & inventory analytics</p></div>
+        <Select className="filter-select" value={range} onChange={(e) => setRange(e.target.value)}>
           <option value="7">Last 7 days</option><option value="30">Last 30 days</option><option value="90">Last 90 days</option>
         </Select>
       </div>
 
       <div className="grid even3">
-        <StatCard label="Revenue (period)" value={peso(fin.revenue)} delta={`${fin.payments} payments`} tone="success" />
-        <StatCard label="Outstanding" value={peso(fin.outstanding)} delta="unpaid + partial" tone="warning" />
-        <StatCard label="Completion rate" value={`${Math.round(((appts.by_status?.completed || 0) / Math.max(1, Object.values(appts.by_status || {}).reduce((s, v) => s + v, 0))) * 100)}%`} delta="completed appointments" tone="info" />
+        <StatCard label="Revenue (period)" value={peso(fin.revenue)} delta={`${fin.payments} payments`} tone="green" />
+        <StatCard label="Outstanding" value={peso(fin.outstanding)} delta="unpaid + partial" tone="amber" />
+        <StatCard label="Completion rate" value={`${Math.round(((appts.by_status?.completed || 0) / Math.max(1, Object.values(appts.by_status || {}).reduce((s, v) => s + v, 0))) * 100)}%`} delta="completed appointments" tone="blue" />
       </div>
 
       <div className="grid two mt16">
         <Card title="Revenue trend" subtitle="Daily collections">
-          <div style={{ height: 260 }}>
+          <div className="chart-md">
             <ResponsiveContainer>
               <LineChart data={fin.daily} margin={{ top: 8, right: 8, left: -8, bottom: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
@@ -56,7 +56,7 @@ export default function Reports() {
           </div>
         </Card>
         <Card title="Payments by method" subtitle="Where money comes from">
-          <div style={{ height: 260 }}>
+          <div className="chart-md">
             <ResponsiveContainer>
               <BarChart data={fin.by_method} layout="vertical" margin={{ left: 20 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" horizontal={false} />
@@ -72,16 +72,16 @@ export default function Reports() {
       <div className="grid even3 mt16">
         <Card title="Appointments by status" subtitle="In selected period">
           {Object.entries(appts.by_status || {}).map(([s, c]) => (
-            <div key={s} className="between" style={{ padding: '8px 0', borderBottom: '1px solid var(--border)', textTransform: 'capitalize' }}><span>{s.replace(/_/g, ' ')}</span><b>{c}</b></div>
+            <ListRow key={s} className="cap"><span>{s.replace(/_/g, ' ')}</span><b>{c}</b></ListRow>
           ))}
         </Card>
         <Card title="Top dentists" subtitle="By appointments">
-          {(dash.dentists || []).map((d) => <div key={d.id} className="between" style={{ padding: '8px 0', borderBottom: '1px solid var(--border)' }}><span><b>{d.name}</b><p className="small muted">{d.appointments} appts</p></span><b>{peso(d.revenue)}</b></div>)}
+          {(dash.dentists || []).map((d) => <ListRow key={d.id}><span><b>{d.name}</b><p className="sub">{d.appointments} appts</p></span><b>{peso(d.revenue)}</b></ListRow>)}
         </Card>
         <Card title="Inventory health" subtitle="Stock & expiry">
-          <div className="between" style={{ padding: '8px 0' }}><span>Low stock items</span><b style={{ color: 'var(--danger)' }}>{dash.alerts.low_stock}</b></div>
-          <div className="between" style={{ padding: '8px 0' }}><span>Expiring ≤ 60 days</span><b style={{ color: 'var(--warning)' }}>{dash.alerts.expiring}</b></div>
-          <div className="between" style={{ padding: '8px 0' }}><span>Unpaid invoices</span><b>{dash.alerts.unpaid_invoices}</b></div>
+          <ListRow><span>Low stock items</span><b className="text-danger">{dash.alerts.low_stock}</b></ListRow>
+          <ListRow><span>Expiring ≤ 60 days</span><b className="text-warning">{dash.alerts.expiring}</b></ListRow>
+          <ListRow><span>Unpaid invoices</span><b>{dash.alerts.unpaid_invoices}</b></ListRow>
         </Card>
       </div>
     </div>

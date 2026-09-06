@@ -41,4 +41,12 @@ export function friendlyError(err, fallback = 'Something went wrong. Please try 
   return fallback
 }
 
+// Profile photos are served through the API (same origin in prod, Vite-proxied in dev).
+// Relative path lets axios resolve it against the configured baseURL.
+export const avatarUrl = (userId) => `/avatar/${userId}`
+export const resolveAvatar = (user) => {
+  if (!user?.avatar) return undefined
+  return String(user.avatar).startsWith('data:') ? user.avatar : avatarUrl(user.id)
+}
+
 export default api

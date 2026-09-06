@@ -1,4 +1,4 @@
-.ptoolbar { display: flex; gap: 10px; padding: 14px 16px; border-bottom: 1px solid var(--border); flex-wrap: wrap; }
+/* .ptoolbar card toolbar is canonical in components/ui/Ui.css */
 .plink { display: inline-flex; align-items: center; gap: 10px; color: var(--text-primary); font-weight: 600; }
 .plink:hover { text-decoration: none; color: var(--primary); }
 .pager { display: flex; align-items: center; justify-content: center; gap: 14px; padding: 14px; }

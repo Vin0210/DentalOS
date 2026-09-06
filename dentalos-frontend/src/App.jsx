@@ -4,6 +4,7 @@ import { AuthProvider, useAuth } from './context/AuthContext.jsx'
 import { ThemeProvider } from './context/ThemeContext.jsx'
 import AppLayout from './components/layout/Layout.jsx'
 import Landing from './pages/Landing.jsx'
+import Atlas from './pages/Atlas.jsx'
 import Login from './pages/Login.jsx'
 import Dashboard from './pages/Dashboard.jsx'
 import Patients from './pages/Patients.jsx'
@@ -47,6 +48,7 @@ export default function App() {
         <Router>
           <Routes>
             <Route path="/" element={<Landing />} />
+            <Route path="/atlas" element={<Atlas />} />
             <Route path="/login" element={<Login />} />
             <Route path="/portal" element={<RequireAuth roles={['patient', 'super_admin', 'clinic_admin', 'dentist', 'receptionist', 'accountant']}><Portal /></RequireAuth>} />
             <Route path="/app" element={<RequireAuth><AppLayout /></RequireAuth>}>

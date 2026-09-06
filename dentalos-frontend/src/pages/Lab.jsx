@@ -4,7 +4,7 @@ import { ArrowRight, ClipboardList, FileText, Pill, Save, Stethoscope } from 'lu
 import api from '../services/api.js'
 import { demoAppointments } from '../services/mock.js'
 import { fmtTime, peso } from '../utils/format.js'
-import { Avatar, Button, Card, Field, Input, StatusBadge } from '../components/ui/Ui.jsx'
+import { Avatar, Button, Card, Field, Input, ListRow, StatusBadge } from '../components/ui/Ui.jsx'
 import { Odontogram } from '../components/odontogram/Odontogram.jsx'
 import { useTheme } from '../context/ThemeContext.jsx'
 
@@ -58,18 +58,18 @@ export default function Lab() {
   return (
     <div className="page">
       <div className="page-head">
-        <div><h1 className="page-title">Dentist workspace</h1><p className="page-sub">Today&apos;s patients → full visit flow on one screen</p></div>
-        <label className="small muted row">Patient <input className="input" style={{ width: 80 }} value={patientId} onChange={(e) => setPatientId(e.target.value)} /></label>
+        <div><p className="eyebrow">Dentist workspace</p><h1 className="page-title">Dentist workspace</h1><p className="page-sub">Today&apos;s patients → full visit flow on one screen</p></div>
+        <label className="small muted mini-field">Patient <Input value={patientId} onChange={(e) => setPatientId(e.target.value)} /></label>
       </div>
 
       <div className="flow-steps">{STEPS.map((s, i) => <button key={s} className={i === step ? 'active' : i < step ? 'done' : ''} onClick={() => setStep(i)}>{i + 1}. {s}</button>)}</div>
 
-      <div className="grid two mt16" style={{ alignItems: 'start' }}>
-        <div className="grid" style={{ gap: 16 }}>
+      <div className="grid two mt16 items-start">
+        <div className="grid gap-16">
           <Card title="Today's patients" subtitle={`${today.length} on the books`} action={<Link className="btn ghost sm" to="/app/appointments">Calendar <ArrowRight size={14} /></Link>}>
             <div className="appt-list">
               {today.slice(0, 6).map((a) => (
-                <button key={a.id} className="appt" style={{ width: '100%', textAlign: 'left', background: 'none', border: 'none', cursor: 'pointer' }} onClick={() => { setPatientId(String(a.patient?.id || patientId)); setStep(1) }}>
+                <button key={a.id} className="appt" onClick={() => { setPatientId(String(a.patient?.id || patientId)); setStep(1) }}>
                   <span className="appt-time">{fmtTime(a.start_time)}</span>
                   <Avatar name={`${a.patient?.first_name} ${a.patient?.last_name}`} size={32} />
                   <span className="appt-main"><b>{a.patient?.first_name} {a.patient?.last_name}</b><i>{a.procedure?.name || 'Visit'}</i></span>
@@ -81,9 +81,9 @@ export default function Lab() {
 
           <Card title={`Chart — tooth #${selected}`} subtitle="Tap a tooth, set condition in one click">
             <Odontogram records={records} selected={selected} onSelect={setSelected} />
-            <div className="row wrap mt12">
+            <div className="row wrap mt12 cap">
               {['healthy', 'caries', 'filled', 'crown', 'root_canal', 'implant'].map((c) => (
-                <button key={c} className="btn secondary sm" disabled={saving} onClick={() => saveTooth(c)} style={{ textTransform: 'capitalize' }}>{c.replace(/_/g, ' ')}</button>
+                <Button key={c} variant="secondary" size="sm" disabled={saving} onClick={() => saveTooth(c)}>{c.replace(/_/g, ' ')}</Button>
               ))}
             </div>
           </Card>
@@ -102,9 +102,9 @@ export default function Lab() {
           </Card>
         </div>
 
-        <div className="grid" style={{ gap: 16 }}>
+        <div className="grid gap-16">
           <Card title="Quick actions" subtitle="No page-hopping during a visit">
-            <div className="grid" style={{ gap: 8 }}>
+            <div className="grid gap-8">
               <Link className="btn secondary" to={`/app/treatments?patient=${patientId}`}><ClipboardList size={15} /> Treatment plan</Link>
               <Link className="btn secondary" to={`/app/chart?patient=${patientId}`}><Stethoscope size={15} /> Full dental chart</Link>
               <Link className="btn secondary" to={`/app/patients/${patientId}`}><FileText size={15} /> Patient profile</Link>
@@ -121,7 +121,7 @@ export default function Lab() {
               </div>
             ))}
             <div className="between mt8">
-              <button className="btn ghost sm" onClick={() => setRx((a) => [...a, { medication: '', dosage: '', frequency: '', duration: '' }])}>+ Add medicine</button>
+              <Button type="button" variant="ghost" size="sm" onClick={() => setRx((a) => [...a, { medication: '', dosage: '', frequency: '', duration: '' }])}>+ Add medicine</Button>
               <Button size="sm" icon={<Pill size={14} />} onClick={saveRx}>Create Rx</Button>
             </div>
           </Card>
@@ -131,7 +131,6 @@ export default function Lab() {
           </Card>
         </div>
       </div>
-      <style>{`.appt-list{display:flex;flex-direction:column;gap:4px}.appt{display:flex;align-items:center;gap:12px;padding:9px 6px;border-radius:10px;color:inherit}.appt:hover{background:var(--surface-hover)}.appt-time{font-weight:700;font-size:12.5px;color:var(--primary);min-width:56px}.appt-main{display:flex;flex-direction:column;flex:1}.appt-main i{font-style:normal;font-size:12px;color:var(--text-secondary)}.flow-steps{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px}.flow-steps button{border:1px solid var(--border);background:var(--surface);border-radius:999px;padding:7px 14px;font-size:12.5px;font-weight:700;color:var(--text-secondary);cursor:pointer;white-space:nowrap}.flow-steps button.active{background:var(--primary);border-color:var(--primary);color:#fff}.flow-steps button.done{border-color:var(--primary-light);color:var(--primary)}`}</style>
     </div>
   )
 }
@@ -142,5 +141,5 @@ function PendingPlans({ patientId }) {
     api.get(`/patients/${patientId}/treatment-plans`).then(({ data }) => setPlans(data.filter((p) => p.status === 'proposed'))).catch(() => setPlans([{ id: 9, title: 'Whitening + cleaning', status: 'proposed', items: [{ estimated_cost: 10000 }] }]))
   }, [patientId])
   if (!plans.length) return <p className="small muted">No pending plans. Nice.</p>
-  return <div>{plans.map((p) => <div key={p.id} className="between" style={{ padding: '8px 0', borderBottom: '1px solid var(--border)' }}><div><b>{p.title}</b><p className="small muted">{peso((p.items || []).reduce((s, i) => s + Number(i.estimated_cost || 0), 0))}</p></div><StatusBadge value={p.status} /></div>)}</div>
+  return <div>{plans.map((p) => <ListRow key={p.id}><div><b>{p.title}</b><p className="sub">{peso((p.items || []).reduce((s, i) => s + Number(i.estimated_cost || 0), 0))}</p></div><StatusBadge value={p.status} /></ListRow>)}</div>
 }

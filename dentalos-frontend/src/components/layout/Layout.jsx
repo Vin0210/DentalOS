@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { Link, NavLink, Outlet, useLocation } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { EASE } from '../motion/Motion.jsx'
 import DentalOSLogo from '../brand/DentalOSLogo.jsx'
@@ -12,7 +12,8 @@ import {
 } from 'lucide-react'
 import { useAuth } from '../../context/AuthContext.jsx'
 import { useTheme } from '../../context/ThemeContext.jsx'
-import api from '../../services/api.js'
+import { Avatar, Button, Modal } from '../ui/Ui.jsx'
+import api, { resolveAvatar } from '../../services/api.js'
 import './Layout.css'
 
 const NAV = [
@@ -36,12 +37,21 @@ export default function AppLayout() {
   const [results, setResults] = useState(null)
   const [showUser, setShowUser] = useState(false)
   const [quickOpen, setQuickOpen] = useState(false)
+  const [confirmOut, setConfirmOut] = useState(false)
+  const [unread, setUnread] = useState(0)
   const loc = useLocation()
+  const nav = useNavigate()
 
   const items = NAV.filter((n) => !user || n.roles.includes(user.role))
   const crumbs = loc.pathname.split('/').filter(Boolean).slice(1)
   const title = items.find((n) => loc.pathname === n.to || loc.pathname.startsWith(n.to + '/'))?.label
     ?? (crumbs[0] ? crumbs[0][0].toUpperCase() + crumbs[0].slice(1) : 'Dashboard')
+
+  useEffect(() => {
+    api.get('/notifications', { params: { per_page: 50 } })
+      .then(({ data }) => setUnread((data.data || []).filter((n) => !n.read_at).length))
+      .catch(() => setUnread(0))
+  }, [loc.pathname])
 
   const doSearch = async (q) => {
     setQuery(q)
@@ -69,7 +79,7 @@ export default function AppLayout() {
         </nav>
         <div className="side-foot">
           <NavLink to="/app/settings" className="nav-link"><Settings size={18} /><span>Settings</span></NavLink>
-          <button className="nav-link" onClick={logout}><LogOut size={18} /><span>Sign out</span></button>
+          <button className="nav-link" onClick={() => setConfirmOut(true)}><LogOut size={18} /><span>Sign out</span></button>
         </div>
       </aside>
       <div className="sidebar-scrim" onClick={() => setMobileOpen(false)} />
@@ -97,17 +107,17 @@ export default function AppLayout() {
           </div>
           <div className="top-actions">
             <button className="btn primary sm" onClick={() => setQuickOpen(true)}><Plus size={15} /> Quick appointment</button>
-            <button className="icon-btn" onClick={toggleTheme} aria-label="Toggle theme">{theme === 'light' ? <Moon size={17} /> : <Sun size={17} />}</button>
-            <Link className="icon-btn" to="/app/notifications" aria-label="Notifications"><Bell size={17} /></Link>
+            <button className="icon-btn" onClick={toggleTheme} aria-label="Toggle theme"><span className="theme-icon" key={theme}>{theme === 'light' ? <Moon size={17} /> : <Sun size={17} />}</span></button>
+            <Link className={`icon-btn${unread ? ' has-dot' : ''}`} data-count={unread > 9 ? '9+' : unread} to="/app/notifications" aria-label={`Notifications${unread ? `, ${unread} unread` : ''}`}><Bell size={17} /></Link>
             <div className="user-chip" onClick={() => setShowUser((s) => !s)}>
-              <span className="avatar" style={{ width: 32, height: 32, fontSize: 12 }}>{(user?.name || 'U').split(' ').map((w) => w[0]).slice(0, 2).join('')}</span>
+              <Avatar name={user?.name || 'U'} size={32} src={resolveAvatar(user)} />
               <span className="user-meta"><b>{user?.name}</b><i>{user?.role?.replace('_', ' ')}</i></span>
               <ChevronDown size={14} />
               {showUser && (
                 <div className="user-menu">
                   <Link to="/app/settings">Clinic settings</Link>
                   <Link to="/portal">Patient portal view</Link>
-                  <button onClick={logout}>Sign out</button>
+                  <button onClick={() => setConfirmOut(true)}>Sign out</button>
                 </div>
               )}
             </div>
@@ -132,6 +142,11 @@ export default function AppLayout() {
       </div>
 
       <AppointmentModal open={quickOpen} title="Quick appointment" onClose={() => setQuickOpen(false)} />
+
+      <Modal open={confirmOut} title="Sign out?" onClose={() => setConfirmOut(false)}>
+        <p className="small">You&apos;ll be signed out of DentalOS on this device and need to sign in again.</p>
+        <div className="between mt16"><span /><div className="row"><Button variant="secondary" onClick={() => setConfirmOut(false)}>Stay signed in</Button><Button variant="danger" onClick={async () => { setConfirmOut(false); await logout(); nav('/login', { replace: true }) }}>Sign out</Button></div></div>
+      </Modal>
     </div>
   )
 }

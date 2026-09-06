@@ -4,7 +4,7 @@ import { Plus } from 'lucide-react'
 import api from '../services/api.js'
 import { demoProcedures } from '../services/mock.js'
 import { peso } from '../utils/format.js'
-import { Button, Card, EmptyState, Field, Input, Modal, Select, StatusBadge } from '../components/ui/Ui.jsx'
+import { Button, Card, EmptyState, Field, Input, ListRow, Modal, Select, StatusBadge } from '../components/ui/Ui.jsx'
 import { useTheme } from '../context/ThemeContext.jsx'
 
 export default function Treatments() {
@@ -62,9 +62,9 @@ export default function Treatments() {
   return (
     <div className="page">
       <div className="page-head">
-        <div><h1 className="page-title">Treatment planning</h1><p className="page-sub">Propose → accept → complete, with automatic totals</p></div>
+        <div><p className="eyebrow">Treatment planning</p><h1 className="page-title">Treatment planning</h1><p className="page-sub">Propose → accept → complete, with automatic totals</p></div>
         <div className="row">
-          <label className="small muted">Patient <input className="input" style={{ width: 80 }} value={patientId} onChange={(e) => setPatientId(e.target.value)} /></label>
+          <label className="small muted mini-field">Patient <Input value={patientId} onChange={(e) => setPatientId(e.target.value)} /></label>
           <Button icon={<Plus size={15} />} onClick={() => setOpen(true)}>New plan</Button>
         </div>
       </div>
@@ -73,10 +73,10 @@ export default function Treatments() {
         {plans.map((plan) => (
           <Card key={plan.id} title={plan.title} subtitle={`Plan #${plan.id}${plan.discount ? ` · discount ${peso(plan.discount)}` : ''}`} action={<StatusBadge value={plan.status} />}>
             {(plan.items || []).map((it) => (
-              <div key={it.id} className="between" style={{ padding: '9px 0', borderBottom: '1px solid var(--border)' }}>
-                <div><b>{it.procedure?.name || 'Procedure'}</b><p className="small muted">Tooth #{it.tooth_number || '—'} · {it.priority} priority</p></div>
+              <ListRow key={it.id}>
+                <div><b>{it.procedure?.name || 'Procedure'}</b><p className="sub">Tooth #{it.tooth_number || '—'} · {it.priority} priority</p></div>
                 <b>{peso(it.estimated_cost)}</b>
-              </div>
+              </ListRow>
             ))}
             <div className="between mt12"><span className="muted small">Estimated total</span><b style={{ fontSize: 18 }}>{peso(total(plan))}</b></div>
             <div className="row wrap mt12">
@@ -95,7 +95,7 @@ export default function Treatments() {
             <Field label="Plan title" ><Input name="title" required placeholder="e.g. Root canal + crown, tooth #16" /></Field>
             <Field label="Notes"><Input name="notes" placeholder="Optional" /></Field>
           </div>
-          <p className="small muted mt12" style={{ fontWeight: 700 }}>ITEMS</p>
+          <p className="eyebrow mt12">Items</p>
           {items.map((it, i) => (
             <div key={i} className="form-grid mt8">
               <Field label="Procedure"><Select value={it.procedure_id} onChange={(e) => pickProc(i, e.target.value)} required><option value="">Select…</option>{procedures.map((p) => <option key={p.id} value={p.id}>{p.name} · {peso(p.default_price)}</option>)}</Select></Field>
@@ -104,7 +104,7 @@ export default function Treatments() {
               <Field label="Cost (₱)"><Input type="number" min={0} value={it.estimated_cost} onChange={(e) => setItems((a) => a.map((x, j) => j === i ? { ...x, estimated_cost: e.target.value } : x))} /></Field>
             </div>
           ))}
-          <button type="button" className="btn ghost sm mt8" onClick={() => setItems((a) => [...a, { procedure_id: '', tooth_number: '', priority: 'medium', estimated_cost: 0 }])}>+ Add item</button>
+          <Button type="button" variant="ghost" size="sm" className="mt8" onClick={() => setItems((a) => [...a, { procedure_id: '', tooth_number: '', priority: 'medium', estimated_cost: 0 }])}>+ Add item</Button>
           <div className="between mt16"><b>Total: {peso(items.reduce((s, i) => s + Number(i.estimated_cost || 0), 0))}</b><Button loading={saving} type="submit">Propose plan</Button></div>
         </form>
       </Modal>

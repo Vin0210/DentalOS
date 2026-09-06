@@ -13,7 +13,7 @@ import { Tooth } from '../components/odontogram/Odontogram.jsx'
 import './Dashboard.css'
 import '../components/fact/DentalFact.css'
 
-const PIE_COLORS = ['#22c55e', '#3b82f6', '#f59e0b', '#ef4444', '#8b5cf6']
+const PIE_COLORS = ['#10b981', '#0ea5e9', '#f59e0b', '#f43f5e', '#8b5cf6']
 
 function greeting() {
   const h = new Date().getHours()
@@ -49,7 +49,7 @@ export default function Dashboard() {
   return (
     <div className="page dash">
       <div className="page-head">
-        <div><h1 className="page-title">{greeting()}, Doctor</h1><p className="page-sub">Here&apos;s what&apos;s happening in your clinic today.</p></div>
+        <div><p className="eyebrow">Clinic overview</p><h1 className="page-title">{greeting()}, Doctor</h1><p className="page-sub">Here&apos;s what&apos;s happening in your clinic today.</p></div>
         <div className="row">
           <Link className="btn secondary" to="/app/appointments">View calendar</Link>
           <Link className="btn primary" to="/app/patients">+ New patient</Link>
@@ -57,11 +57,11 @@ export default function Dashboard() {
       </div>
 
       <div className="grid kpi">
-        <StatCard label="Appointments today" value={<AnimatedNumber value={k.appointments_today} />} delta={`${k.patients_today} patients`} icon={<CalendarCheck size={17} />} tone="primary" />
-        <StatCard label="Revenue today" value={<AnimatedNumber value={k.revenue_today} format={(v) => peso(v)} />} delta="vs yesterday" icon={<CircleDollarSign size={17} />} tone="success" />
-        <StatCard label="Outstanding" value={<AnimatedNumber value={k.outstanding} format={(v) => peso(v)} />} delta="collect this week" icon={<Wallet size={17} />} tone="warning" />
-        <StatCard label="New patients" value={<AnimatedNumber value={k.new_patients_today} />} delta={`${k.total_patients} total`} icon={<UserPlus size={17} />} tone="info" />
-        <StatCard label="Low stock" value={<AnimatedNumber value={data.alerts.low_stock} />} delta="items to reorder" icon={<AlertTriangle size={17} />} tone="danger" />
+        <StatCard label="Appointments today" value={<AnimatedNumber value={k.appointments_today} />} delta={`${k.patients_today} patients`} icon={<CalendarCheck size={17} />} tone="teal" />
+        <StatCard label="Revenue today" value={<AnimatedNumber value={k.revenue_today} format={(v) => peso(v)} />} delta="vs yesterday" icon={<CircleDollarSign size={17} />} tone="green" />
+        <StatCard label="Outstanding" value={<AnimatedNumber value={k.outstanding} format={(v) => peso(v)} />} delta="collect this week" icon={<Wallet size={17} />} tone="amber" />
+        <StatCard label="New patients" value={<AnimatedNumber value={k.new_patients_today} />} delta={`${k.total_patients} total`} icon={<UserPlus size={17} />} tone="blue" />
+        <StatCard label="Low stock" value={<AnimatedNumber value={data.alerts.low_stock} />} delta="items to reorder" icon={<AlertTriangle size={17} />} tone="rose" />
         <StatCard label="Unpaid invoices" value={<AnimatedNumber value={data.alerts.unpaid_invoices} />} delta="need follow-up" icon={<Users size={17} />} tone="violet" />
       </div>
 
@@ -81,7 +81,7 @@ export default function Dashboard() {
             {!data.upcoming?.length && <p className="muted small">No appointments scheduled.</p>}
           </motion.div>
           <div className="activity mt16">
-            <p className="small muted" style={{ fontWeight: 700 }}>DENTAL ACTIVITY · APPOINTMENTS PER HOUR</p>
+            <p className="eyebrow">Dental activity · appointments per hour</p>
             <div className="activity-bars">
               {activity.map((s) => (
                 <div key={s.h} className="abar" title={`${s.h}: ${s.n}`}>
@@ -93,7 +93,7 @@ export default function Dashboard() {
           </div>
         </Card>
 
-        <div className="grid" style={{ gap: 16 }}>
+        <div className="grid gap-16">
           <Card title="Today's progress" subtitle="Live completion tracking">
             <div className="rings">
               <ProgressRing value={completed} max={Math.max(totalAppts, completed)} label="Appointments" sub={`${completed}/${Math.max(totalAppts, completed)} done`} />
@@ -102,13 +102,13 @@ export default function Dashboard() {
             </div>
           </Card>
           <Card title="Revenue — last 7 days" subtitle="Payments collected per day">
-            <div style={{ height: 190 }}>
+            <div className="chart-sm">
               <ResponsiveContainer>
                 <BarChart data={data.revenue_7d} margin={{ top: 8, right: 4, left: -12, bottom: 0 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
                   <XAxis dataKey="d" tick={{ fontSize: 11 }} tickFormatter={(d) => d.slice(5)} stroke="var(--text-muted)" />
                   <YAxis tick={{ fontSize: 11 }} stroke="var(--text-muted)" tickFormatter={(v) => `₱${v / 1000}k`} />
-                  <Tooltip formatter={(v) => peso(v)} labelStyle={{ color: '#0f172a' }} />
+                  <Tooltip formatter={(v) => peso(v)} labelStyle={{ color: 'var(--text-primary)' }} contentStyle={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 10 }} />
                   <Bar dataKey="total" radius={[6, 6, 2, 2]} fill="var(--primary)" />
                 </BarChart>
               </ResponsiveContainer>
@@ -119,7 +119,7 @@ export default function Dashboard() {
 
       <div className="grid even3 mt16">
         <Card title="Appointments by status" subtitle="Today's mix">
-          <div style={{ height: 190 }}>
+          <div className="chart-sm">
             <ResponsiveContainer>
               <PieChart>
                 <Pie data={pie} dataKey="value" nameKey="name" innerRadius={48} outerRadius={72} paddingAngle={3}>
@@ -132,7 +132,7 @@ export default function Dashboard() {
           <div className="legend">{pie.map((p, i) => <span key={p.name}><i style={{ background: PIE_COLORS[i % PIE_COLORS.length] }} />{p.name} · <b>{p.value}</b></span>)}</div>
         </Card>
 
-        <div className="grid" style={{ gap: 16 }}>
+        <div className="grid gap-16">
           {champion && (
             <div className="champion">
               <span className="champ-trophy"><Trophy size={18} /></span>
@@ -152,7 +152,7 @@ export default function Dashboard() {
           </Card>
         </div>
 
-        <div className="grid" style={{ gap: 16 }}>
+        <div className="grid gap-16">
           <Card title="Featured tooth" subtitle="Most treated this week — click to open chart" action={<Link className="btn ghost sm" to="/app/chart">Open <ArrowRight size={14} /></Link>}>
             <Link to="/app/chart" className="featured-tooth">
               <Tooth number="36" condition="filled" animateIn={false} small />

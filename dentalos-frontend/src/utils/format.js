@@ -37,8 +37,8 @@ export const TOOTH_CONDITIONS = [
   'healthy','caries','filled','missing','extracted','crown','root_canal','implant','fractured','impacted','veneer','bridge',
 ]
 export const TOOTH_COLORS = {
-  healthy: '#ffffff', caries: '#ef4444', filled: '#3b82f6', missing: '#e2e8f0',
-  extracted: '#94a3b8', crown: '#f59e0b', root_canal: '#8b5cf6', implant: '#22c55e',
+  healthy: '#ffffff', caries: '#f59e0b', filled: '#0ea5e9', missing: '#cbd5e1',
+  extracted: '#f43f5e', crown: '#d4a72c', root_canal: '#8b5cf6', implant: '#10b981',
   fractured: '#f97316', impacted: '#eab308', veneer: '#14b8a6', bridge: '#6366f1',
 }
 export const SURFACES = ['mesial', 'distal', 'occlusal', 'buccal', 'lingual']

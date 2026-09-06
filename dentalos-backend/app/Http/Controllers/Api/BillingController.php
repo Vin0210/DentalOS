@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\AppNotification;
 use App\Models\AuditLog;
 use App\Models\Invoice;
 use App\Models\Payment;
@@ -58,6 +59,7 @@ class BillingController extends Controller
         $payment = Payment::create(['invoice_id' => $invoice->id, 'patient_id' => $invoice->patient_id, 'amount' => $data['amount'], 'method' => $data['method'], 'reference' => $data['reference'] ?? null, 'notes' => $data['notes'] ?? null, 'received_by' => $request->user()?->id]);
         $invoice->refresh()->recalculate();
         AuditLog::record($request->user()?->id, 'payment', 'invoices', $invoice->id, "Payment ₱" . number_format($payment->amount, 2) . " for {$invoice->invoice_no}", [], $request->ip());
+        AppNotification::notify('Payment received', '₱' . number_format($payment->amount, 2) . " for {$invoice->invoice_no}", 'payment', null, '/app/billing');
         return response()->json($payment, 201);
     }
 

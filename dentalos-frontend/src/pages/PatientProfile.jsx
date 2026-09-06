@@ -7,7 +7,7 @@ import ImageViewer, { demoScans } from '../components/imaging/ImageViewer.jsx'
 import '../components/imaging/ImageViewer.css'
 import { demoTimeline } from '../services/mock.js'
 import { fmtDate, peso } from '../utils/format.js'
-import { Avatar, Button, Card, SkeletonList, StatusBadge } from '../components/ui/Ui.jsx'
+import { Avatar, Button, Card, Input, ListRow, SkeletonList, StatusBadge } from '../components/ui/Ui.jsx'
 import { useTheme } from '../context/ThemeContext.jsx'
 
 export default function PatientProfile() {
@@ -67,11 +67,12 @@ export default function PatientProfile() {
         <div className="profile-id">
           <Avatar name={name} size={60} />
           <div>
+            <p className="eyebrow">Patient record</p>
             <h1>{name}</h1>
             <p className="small muted">Patient ID: {patient.patient_no}</p>
             <div className="profile-facts">
               <div><span>Age</span><b>{patient.age ?? '—'}</b></div>
-              <div><span>Gender</span><b style={{ textTransform: 'capitalize' }}>{patient.gender}</b></div>
+              <div><span>Gender</span><b className="cap">{patient.gender}</b></div>
               <div><span>Status</span><b><StatusBadge value={patient.status} /></b></div>
               <div><span>Blood</span><b>{patient.blood_type || '—'}</b></div>
             </div>
@@ -85,14 +86,14 @@ export default function PatientProfile() {
       </div>
 
       <div className="tabs mt16" role="tablist">
-        {['overview', 'treatments', 'appointments', 'billing', 'files'].map((t) => (
-          <button key={t} role="tab" aria-selected={tab === t} className={`tab${tab === t ? ' active' : ''}`} onClick={() => setTab(t)} style={{ textTransform: 'capitalize' }}>{t}</button>
+          {['overview', 'treatments', 'appointments', 'billing', 'files'].map((t) => (
+          <button key={t} role="tab" aria-selected={tab === t} className={`tab cap${tab === t ? ' active' : ''}`} onClick={() => setTab(t)}>{t}</button>
         ))}
       </div>
 
       {tab === 'overview' && (
         <div className="grid two">
-          <div className="grid" style={{ gap: 16 }}>
+          <div className="grid gap-16">
             <Card title="Personal information">
               <div className="info-grid">
                 <div><span>Phone</span><b>{patient.phone || '—'}</b></div>
@@ -111,8 +112,8 @@ export default function PatientProfile() {
               </div>
             </Card>
             <Card title="Add clinical note">
-              <form onSubmit={addNote} className="row" style={{ alignItems: 'flex-end' }}>
-                <div style={{ flex: 1 }}><input className="input" value={note} onChange={(e) => setNote(e.target.value)} placeholder="Chief complaint, observation…" aria-label="Clinical note" /></div>
+              <form onSubmit={addNote} className="row items-end">
+                <div className="flex-1"><Input value={note} onChange={(e) => setNote(e.target.value)} placeholder="Chief complaint, observation…" aria-label="Clinical note" /></div>
                 <Button loading={savingNote} type="submit">Save</Button>
               </form>
             </Card>
@@ -141,10 +142,10 @@ export default function PatientProfile() {
       {tab === 'treatments' && (
         <Card title="Treatment plans" subtitle={`${patient.treatmentPlans?.length ?? 0} plans`}>
           {(patient.treatmentPlans || []).map((t) => (
-            <div key={t.id} className="between" style={{ padding: '10px 0', borderBottom: '1px solid var(--border)' }}>
-              <div><b>{t.title}</b><p className="small muted">{t.items?.length || 0} items</p></div>
+            <ListRow key={t.id}>
+              <div><b>{t.title}</b><p className="sub">{t.items?.length || 0} items</p></div>
               <StatusBadge value={t.status} />
-            </div>
+            </ListRow>
           ))}
           {!patient.treatmentPlans?.length && <p className="muted small">No treatment plans yet. <Link to={`/app/treatments?patient=${patient.id}`}>Create one</Link>.</p>}
         </Card>
@@ -153,10 +154,10 @@ export default function PatientProfile() {
       {tab === 'appointments' && (
         <Card title="Appointments">
           {(patient.appointments || []).map((a) => (
-            <div key={a.id} className="between" style={{ padding: '10px 0', borderBottom: '1px solid var(--border)' }}>
-              <div><b>{fmtDate(a.date)} · {a.start_time?.slice(0, 5)}</b><p className="small muted">{a.dentist?.user?.name}</p></div>
+            <ListRow key={a.id}>
+              <div><b>{fmtDate(a.date)} · {a.start_time?.slice(0, 5)}</b><p className="sub">{a.dentist?.user?.name}</p></div>
               <StatusBadge value={a.status} />
-            </div>
+            </ListRow>
           ))}
           {!patient.appointments?.length && <p className="muted small">No appointments yet.</p>}
         </Card>
@@ -165,10 +166,10 @@ export default function PatientProfile() {
       {tab === 'billing' && (
         <Card title="Billing">
           {(patient.invoices || []).map((inv) => (
-            <div key={inv.id} className="between" style={{ padding: '10px 0', borderBottom: '1px solid var(--border)' }}>
-              <div><b>{inv.invoice_no}</b><p className="small muted">{peso(inv.total)} · paid {peso(inv.paid)}</p></div>
+            <ListRow key={inv.id}>
+              <div><b>{inv.invoice_no}</b><p className="sub">{peso(inv.total)} · paid {peso(inv.paid)}</p></div>
               <StatusBadge value={inv.status} />
-            </div>
+            </ListRow>
           ))}
           {!patient.invoices?.length && <p className="muted small">No invoices yet.</p>}
         </Card>

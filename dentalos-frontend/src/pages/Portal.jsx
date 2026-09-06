@@ -1,21 +1,24 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { Bell, CalendarDays, ClipboardList, Receipt, UserRound } from 'lucide-react'
+import { Bell, CalendarDays, ClipboardList, Moon, Receipt, Sun, UserRound } from 'lucide-react'
 import api from '../services/api.js'
 import { useAuth } from '../context/AuthContext.jsx'
+import { useTheme } from '../context/ThemeContext.jsx'
 import { AppointmentModal, patientLabel } from '../components/appointments/BookingForm.jsx'
 import { demoAppointments, demoInvoices } from '../services/mock.js'
 import { fmtDate, fmtTime, peso } from '../utils/format.js'
-import { Button, Card, StatusBadge } from '../components/ui/Ui.jsx'
+import { Button, Card, ListRow, Modal, StatusBadge } from '../components/ui/Ui.jsx'
 import './Portal.css'
 
 export default function Portal() {
   const { user, logout } = useAuth()
+  const { theme, toggleTheme } = useTheme()
   const nav = useNavigate()
   const [appts, setAppts] = useState([])
   const [invoices, setInvoices] = useState([])
   const [booking, setBooking] = useState(false)
+  const [confirmOut, setConfirmOut] = useState(false)
   const [ownRecord, setOwnRecord] = useState(null)
 
   const load = async () => {
@@ -55,9 +58,10 @@ export default function Portal() {
     <div className="portal">
       <header className="portal-head">
         <span className="lp-brand"><span className="brand-mark">◈</span> DentalOS</span>
-        <div className="row"><Link className="btn ghost sm" to="/app">Staff view</Link><button className="btn secondary sm" onClick={async () => { await logout(); nav('/login', { replace: true }) }}>Sign out</button></div>
+        <div className="row"><button type="button" className="icon-btn" onClick={toggleTheme} aria-label="Toggle theme"><span className="theme-icon" key={theme}>{theme === 'light' ? <Moon size={17} /> : <Sun size={17} />}</span></button><Link className="btn ghost sm" to="/app">Staff view</Link><Button variant="secondary" size="sm" onClick={() => setConfirmOut(true)}>Sign out</Button></div>
       </header>
       <div className="portal-body">
+        <p className="eyebrow">Patient portal</p>
         <h1>Good morning, {user?.name?.split(' ')[0] || 'Juan'}</h1>
         <p className="muted">Here&apos;s your dental care at a glance.</p>
 
@@ -81,12 +85,12 @@ export default function Portal() {
             <p className="small muted">Root canal in progress — next visit: follow-up & crown fitting.</p>
           </Card>
           <Card title="Upcoming visits">
-            {appts.slice(0, 4).map((a) => <div key={a.id} className="between" style={{ padding: '8px 0', borderBottom: '1px solid var(--border)' }}><span><b>{fmtDate(a.date)}</b><p className="small muted">{a.procedure?.name}</p></span><StatusBadge value={a.status} /></div>)}
+            {appts.slice(0, 4).map((a) => <ListRow key={a.id}><span><b>{fmtDate(a.date)}</b><p className="sub">{a.procedure?.name}</p></span><StatusBadge value={a.status} /></ListRow>)}
             <div className="mt12"><Button variant="secondary" size="sm" onClick={() => setBooking(true)}>Request appointment</Button></div>
             {!ownRecord && <p className="small muted mt8">Tip: search your name in the booking form to link your record.</p>}
           </Card>
           <Card title="Invoices & payments">
-            {invoices.slice(0, 4).map((i) => <div key={i.id} className="between" style={{ padding: '8px 0', borderBottom: '1px solid var(--border)' }}><span><b>{i.invoice_no}</b><p className="small muted">Balance {peso(i.balance)}</p></span><StatusBadge value={i.status} /></div>)}
+            {invoices.slice(0, 4).map((i) => <ListRow key={i.id}><span><b>{i.invoice_no}</b><p className="sub">Balance {peso(i.balance)}</p></span><StatusBadge value={i.status} /></ListRow>)}
           </Card>
           <Card title="Treatment plans">
             <div className="row"><ClipboardList size={16} className="muted" /><p className="small">Root Canal + Crown — <b>Accepted</b> · {peso(19500)}</p></div>
@@ -103,6 +107,10 @@ export default function Portal() {
         initialPatient={ownRecord}
         onClose={(done) => { setBooking(false); if (done) load() }}
       />
+      <Modal open={confirmOut} title="Sign out?" onClose={() => setConfirmOut(false)}>
+        <p className="small">You&apos;ll be signed out of DentalOS on this device and need to sign in again.</p>
+        <div className="between mt16"><span /><div className="row"><Button variant="secondary" onClick={() => setConfirmOut(false)}>Stay signed in</Button><Button variant="danger" onClick={async () => { setConfirmOut(false); await logout(); nav('/login', { replace: true }) }}>Sign out</Button></div></div>
+      </Modal>
     </div>
   )
 }

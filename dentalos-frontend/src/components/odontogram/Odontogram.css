@@ -4,7 +4,18 @@
 .arch { background: var(--surface-secondary); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 12px; }
 .arch-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-secondary); }
 .teeth-row { display: grid; grid-template-columns: repeat(16, 1fr); gap: 4px; margin-top: 8px; }
-.tooth { background: none; border: 2px solid transparent; border-radius: 10px; padding: 4px 2px 2px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 2px; color: var(--text-secondary); font-size: 10.5px; font-weight: 700; min-width: 0; }
+.tooth { background: none; border: 2px solid transparent; border-radius: 10px; padding: 4px 2px 2px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 2px; color: var(--text-secondary); font-size: 10.5px; font-weight: 700; min-width: 0; position: relative; }
+.tooth-tilt { display: flex; flex-direction: column; align-items: center; gap: 2px; transform-origin: 50% 60%; }
+.tooth-tip { position: absolute; bottom: calc(100% + 6px); left: 50%; transform: translateX(-50%); background: var(--text-primary); color: var(--background); font-size: 11px; font-weight: 700; padding: 5px 9px; border-radius: 8px; white-space: nowrap; z-index: 20; box-shadow: var(--shadow); pointer-events: none; }
+.tooth-tip::after { content: ''; position: absolute; top: 100%; left: 50%; transform: translateX(-50%); border: 5px solid transparent; border-top-color: var(--text-primary); }
+/* large anatomical figure for the detail panel */
+.tooth-figure { display: flex; justify-content: center; padding: 8px 0 4px; }
+.tooth-figure svg { width: 100%; max-width: 150px; height: auto; filter: drop-shadow(0 10px 20px rgba(15, 23, 42, 0.18)); }
+.tooth-fact { display: flex; gap: 8px; align-items: flex-start; background: var(--primary-soft); border-radius: 10px; padding: 10px 12px; font-size: 12.5px; color: var(--text-primary); }
+.tooth-fact svg { flex-shrink: 0; color: var(--primary); margin-top: 1px; }
+.view-tabs { display: flex; background: var(--surface-secondary); border-radius: 10px; padding: 3px; gap: 2px; margin-top: 12px; }
+.view-tabs button { border: none; background: none; padding: 6px 10px; border-radius: 8px; font-size: 12px; font-weight: 700; color: var(--text-secondary); cursor: pointer; flex: 1; text-transform: capitalize; }
+.view-tabs button.active { background: var(--surface); color: var(--primary); box-shadow: var(--shadow-sm); }
 .tooth svg { width: 100%; max-width: 34px; height: auto; filter: drop-shadow(0 0 0 transparent); transition: filter var(--transition); }
 .tooth:hover, .tooth:focus-visible { border-color: var(--border-strong); background: var(--surface); }
 .tooth:hover svg, .tooth:focus-visible svg { filter: drop-shadow(0 4px 10px rgba(20, 184, 166, 0.45)); }

@@ -61,13 +61,13 @@ export default function Billing() {
   return (
     <div className="page">
       <div className="page-head">
-        <div><h1 className="page-title">Billing</h1><p className="page-sub">Outstanding <b><AnimatedNumber value={outstanding} format={(v) => peso(v)} /></b> across {rows.length} invoices</p></div>
+        <div><p className="eyebrow">Billing & payments</p><h1 className="page-title">Billing</h1><p className="page-sub">Outstanding <b><AnimatedNumber value={outstanding} format={(v) => peso(v)} /></b> across {rows.length} invoices</p></div>
         <Button icon={<Plus size={15} />} onClick={() => setOpen(true)}>New invoice</Button>
       </div>
 
       <Card pad={false}>
         <div className="ptoolbar">
-          <Select value={status} onChange={(e) => setStatus(e.target.value)} style={{ width: 170 }}>
+          <Select className="filter-select" value={status} onChange={(e) => setStatus(e.target.value)}>
             <option value="">All statuses</option><option value="unpaid">Unpaid</option><option value="partial">Partial</option><option value="paid">Paid</option>
           </Select>
         </div>
@@ -80,9 +80,9 @@ export default function Billing() {
                 <td>{inv.patient ? `${inv.patient.first_name} ${inv.patient.last_name}` : `#${inv.patient_id}`}</td>
                 <td className="muted">{fmtDate(inv.created_at)}</td>
                 <td><b>{peso(inv.total)}</b></td><td className="muted">{peso(inv.paid)}</td>
-                <td><b style={{ color: Number(inv.balance) > 0 ? 'var(--danger)' : 'var(--success)' }}>{peso(inv.balance)}</b></td>
+                <td><b className={Number(inv.balance) > 0 ? 'text-danger' : 'text-success'}>{peso(inv.balance)}</b></td>
                 <td><StatusBadge value={inv.status} /></td>
-                <td>{Number(inv.balance) > 0 && <button className="btn secondary sm" onClick={() => setPayTarget(inv)}>Record payment</button>}</td>
+                <td>{Number(inv.balance) > 0 && <Button variant="secondary" size="sm" onClick={() => setPayTarget(inv)}>Record payment</Button>}</td>
               </tr>
             ))}</tbody>
           </table></div>
@@ -106,7 +106,7 @@ export default function Billing() {
               }}><option value="">—</option>{procedures.map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}</Select></Field>
             </div>
           ))}
-          <button type="button" className="btn ghost sm mt8" onClick={() => setLines((a) => [...a, { description: '', quantity: 1, unit_price: 0 }])}>+ Add line</button>
+          <Button type="button" variant="ghost" size="sm" className="mt8" onClick={() => setLines((a) => [...a, { description: '', quantity: 1, unit_price: 0 }])}>+ Add line</Button>
           <div className="between mt16"><b>Total: {peso(lineTotal)}</b><Button loading={saving} type="submit">Issue invoice</Button></div>
         </form>
       </Modal>

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\AppNotification;
 use App\Models\Appointment;
 use App\Models\AuditLog;
 use App\Services\AppointmentService;
@@ -36,6 +37,9 @@ class AppointmentController extends Controller
         $data['created_by'] = $request->user()?->id;
         $appt = Appointment::create($data);
         AuditLog::record($request->user()?->id, 'create', 'appointments', $appt->id, "Appointment scheduled for patient #{$appt->patient_id}", [], $request->ip());
+        $appt->loadMissing('patient');
+        $who = trim(($appt->patient->first_name ?? '') . ' ' . ($appt->patient->last_name ?? '')) ?: "Patient #{$appt->patient_id}";
+        AppNotification::notify('Appointment scheduled', "$who · {$appt->date} " . substr((string) $appt->start_time, 0, 5), 'appointment', null, '/app/appointments');
         return response()->json($appt->load(['patient','dentist.user']), 201);
     }
 
@@ -62,6 +66,9 @@ class AppointmentController extends Controller
         $data = $request->validate(['status' => 'required|in:confirmed,checked_in,in_progress,completed,cancelled,no_show']);
         $svc->advance($appointment, $data['status']);
         AuditLog::record($request->user()?->id, 'status', 'appointments', $appointment->id, "Appointment #{$appointment->id} → {$data['status']}", [], $request->ip());
+        if (in_array($data['status'], ['confirmed', 'cancelled', 'no_show'], true)) {
+            AppNotification::notify("Appointment {$data['status']}", "Appointment #{$appointment->id} → " . str_replace('_', ' ', $data['status']), 'appointment', null, '/app/appointments');
+        }
         return response()->json($appointment->fresh()->load(['patient','dentist.user']));
     }
 

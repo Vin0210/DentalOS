@@ -1,4 +1,7 @@
-.game-fab { position: fixed; left: 18px; bottom: 18px; z-index: 900; width: 48px; height: 48px; border-radius: 50%; border: none; background: var(--primary); color: #fff; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; box-shadow: var(--shadow-lg); }
+.game-fab { position: fixed; right: 18px; bottom: 18px; z-index: 900; width: 48px; height: 48px; border-radius: 50%; border: none; background: var(--primary); color: #fff; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; box-shadow: var(--shadow-lg); }
+/* inside the app shell, dock right of the sidebar so it never covers nav */
+.shell .game-fab { left: calc(var(--sidebar-w) + 18px); right: auto; }
+.shell.collapsed .game-fab { left: calc(var(--sidebar-collapsed) + 18px); }
 .game-backdrop { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.5); backdrop-filter: blur(3px); z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 18px; }
 .game { background: var(--surface); border-radius: 18px; box-shadow: var(--shadow-lg); width: 480px; max-width: 100%; padding: 20px; }
 .game-hud { display: flex; gap: 8px; flex-wrap: wrap; margin: 12px 0 8px; }
@@ -15,4 +18,4 @@
 .bug.dying { pointer-events: none; }
 .game-overlay { position: absolute; inset: 0; display: flex; flex-direction: column; gap: 12px; align-items: center; justify-content: center; background: color-mix(in srgb, var(--surface) 82%, transparent); backdrop-filter: blur(2px); text-align: center; padding: 20px; }
 .game-overlay h4 { margin: 0; font-size: 18px; }
-@media (max-width: 560px) { .game-fab { bottom: 76px; } }
+@media (max-width: 960px) { .shell .game-fab, .game-fab { left: auto; right: 14px; bottom: 78px; } }

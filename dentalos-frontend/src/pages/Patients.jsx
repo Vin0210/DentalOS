@@ -50,16 +50,16 @@ export default function Patients() {
   return (
     <div className="page">
       <div className="page-head">
-        <div><h1 className="page-title">Patients</h1><p className="page-sub">{meta?.total ?? '—'} patients · search, filter & open a profile</p></div>
+        <div><p className="eyebrow">Patient management</p><h1 className="page-title">Patients</h1><p className="page-sub">{meta?.total ?? '—'} patients · search, filter & open a profile</p></div>
         <Button icon={<Plus size={15} />} onClick={() => setOpen(true)}>Register patient</Button>
       </div>
 
       <Card pad={false}>
         <div className="ptoolbar">
-          <div className="search-input"><Search size={15} /><input className="input" placeholder="Search name, ID, phone…" value={search} onChange={(e) => setSearch(e.target.value)} aria-label="Search patients" /></div>
-          <select className="input" style={{ width: 160 }} value={status} onChange={(e) => setStatus(e.target.value)} aria-label="Filter by status">
+          <div className="search-input"><Search size={15} /><Input placeholder="Search name, ID, phone…" value={search} onChange={(e) => setSearch(e.target.value)} aria-label="Search patients" /></div>
+          <Select className="filter-select" value={status} onChange={(e) => setStatus(e.target.value)} aria-label="Filter by status">
             <option value="">All statuses</option><option value="active">Active</option><option value="inactive">Inactive</option>
-          </select>
+          </Select>
         </div>
         {loading ? <div style={{ padding: 18 }}><SkeletonList rows={8} /></div> : rows.length ? (
           <div className="table-wrap"><table className="table">
@@ -68,7 +68,7 @@ export default function Patients() {
               <tr key={p.id}>
                 <td><Link to={`/app/patients/${p.id}`} className="plink"><Avatar name={`${p.first_name} ${p.last_name}`} size={32} /><b>{p.first_name} {p.last_name}</b></Link></td>
                 <td className="muted">{p.patient_no}</td>
-                <td>{p.age ?? '—'} · <span style={{ textTransform: 'capitalize' }}>{p.gender}</span></td>
+                <td>{p.age ?? '—'} · <span className="cap">{p.gender}</span></td>
                 <td className="muted">{p.phone || p.email || '—'}</td>
                 <td className="muted">{fmtDate(p.last_visit_at)}</td>
                 <td><StatusBadge value={p.status} /></td>
@@ -78,9 +78,9 @@ export default function Patients() {
         ) : <EmptyState icon={<UserPlus size={20} />} title="No patients found" hint="Try a different search or register a new patient." action={<Button onClick={() => setOpen(true)}>Register patient</Button>} />}
         {meta?.last_page > 1 && (
           <div className="pager">
-            <button className="btn secondary sm" disabled={page <= 1} onClick={() => setPage((p) => p - 1)}>Previous</button>
+            <Button variant="secondary" size="sm" disabled={page <= 1} onClick={() => setPage((p) => p - 1)}>Previous</Button>
             <span className="small muted">Page {meta.current_page} of {meta.last_page}</span>
-            <button className="btn secondary sm" disabled={page >= meta.last_page} onClick={() => setPage((p) => p + 1)}>Next</button>
+            <Button variant="secondary" size="sm" disabled={page >= meta.last_page} onClick={() => setPage((p) => p + 1)}>Next</Button>
           </div>
         )}
       </Card>

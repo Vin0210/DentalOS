@@ -1,0 +1,38 @@
+/* Anatomical atlas — clean neutral reference sheets, white cards */
+.atlas { min-height: 100vh; background: var(--background); }
+.atlas-head { display: flex; align-items: center; justify-content: space-between; padding: 14px 28px; background: var(--surface); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 20; }
+.atlas-head a:hover { text-decoration: none; color: var(--primary); }
+.atlas-body { max-width: 1240px; margin: 0 auto; padding: 36px 28px 60px; }
+.atlas-body h1 { font-size: clamp(30px, 4vw, 44px); letter-spacing: -0.02em; margin: 0 0 12px; }
+.atlas-lead { max-width: 720px; font-size: 15px; }
+.atlas-h2 { font-size: 22px; margin: 44px 0 16px; letter-spacing: -0.01em; }
+.atlas-archrow { background: var(--surface); border: 1px solid var(--border); border-radius: 18px; padding: 18px 20px; margin-bottom: 14px; }
+.atlas-archrow h3 { margin: 0 0 12px; font-size: 12px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: var(--primary); }
+.atlas-teeth { display: flex; align-items: flex-end; justify-content: space-around; gap: 6px; }
+.atlas-mini { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.atlas-mini svg { width: 100%; height: auto; display: block; }
+.atlas-mini span { font-size: 11px; font-weight: 700; color: var(--text-secondary); }
+.atlas-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+.atlas-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 18px 14px; display: flex; flex-direction: column; align-items: center; text-align: center; }
+.atlas-figure { display: flex; align-items: flex-end; justify-content: center; min-height: 150px; }
+.atlas-figure svg { width: 100%; height: auto; display: block; }
+.atlas-num { font-size: 20px; font-weight: 800; letter-spacing: -0.01em; margin-top: 10px; }
+.atlas-name { font-size: 13.5px; margin-top: 2px; }
+.atlas-meta { list-style: none; padding: 0; margin: 10px 0 0; display: flex; flex-direction: column; gap: 3px; font-size: 12px; color: var(--text-secondary); }
+.atlas-type { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 18px 20px; margin-bottom: 14px; }
+.atlas-type h3 { margin: 0 0 12px; font-size: 15px; }
+.atlas-views { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; }
+.atlas-views figure { margin: 0; background: var(--surface-secondary); border: 1px solid var(--border); border-radius: 12px; padding: 10px 6px 8px; display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.atlas-views svg { width: 100%; max-width: 64px; height: auto; }
+.atlas-views figcaption { font-size: 10.5px; font-weight: 700; color: var(--text-secondary); }
+.atlas-live { background: var(--surface); border: 1px solid var(--border); border-radius: 18px; padding: 18px 20px; }
+.atlas-foot { margin-top: 36px; text-align: center; }
+@media (max-width: 960px) {
+  .atlas-grid { grid-template-columns: repeat(2, 1fr); }
+  .atlas-views { grid-template-columns: repeat(3, 1fr); }
+  .atlas-teeth { flex-wrap: wrap; }
+}
+@media (max-width: 560px) {
+  .atlas-body { padding: 24px 16px 48px; }
+  .atlas-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+}

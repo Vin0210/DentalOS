@@ -1,16 +1,18 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { AnimatePresence, motion, useScroll, useSpring } from 'framer-motion'
-import { Boxes, CalendarDays, ClipboardList, Receipt, Stethoscope, Users, ArrowUp, ArrowDown, ArrowRight, Check } from 'lucide-react'
+import { Boxes, CalendarDays, ClipboardList, Receipt, Stethoscope, Users, ArrowUp, ArrowDown, ArrowRight, Check, Moon, Sun } from 'lucide-react'
 import api from '../services/api.js'
 import { demoProcedures } from '../services/mock.js'
 import { peso } from '../utils/format.js'
 import HeroDental from '../components/hero/HeroDental.jsx'
 import DentalOSLogo, { TOOTH_PATH } from '../components/brand/DentalOSLogo.jsx'
-import OdontogramPreview from '../components/odontogram/OdontogramPreview.jsx'
+import { GameFab } from '../components/game/CavityGame.jsx'
+import ChartExplore from '../components/odontogram/ChartExplore.jsx'
 import Journey from '../components/journey/Journey.jsx'
 import DentalFact from '../components/fact/DentalFact.jsx'
 import { AnimatedNumber, Reveal } from '../components/motion/Motion.jsx'
+import { useTheme } from '../context/ThemeContext.jsx'
 import './Landing.css'
 import '../components/hero/HeroDental.css'
 import '../components/fact/DentalFact.css'
@@ -20,6 +22,41 @@ function ScrollProgress() {
   const { scrollYProgress } = useScroll()
   const scaleX = useSpring(scrollYProgress, { stiffness: 140, damping: 26, mass: 0.3 })
   return <motion.div className="lp-progress" style={{ scaleX }} aria-hidden />
+}
+
+const DOTS = [
+  { id: 'top', label: 'Top' },
+  { id: 'features', label: 'Features' },
+  { id: 'chart', label: 'Dental chart' },
+  { id: 'pricing', label: 'Pricing' },
+  { id: 'faq', label: 'FAQ' },
+]
+
+// Highlights the dot whose section currently crosses the viewport middle.
+function useActiveSection() {
+  const [active, setActive] = useState('top')
+  useEffect(() => {
+    const ratios = {}
+    const pick = () => {
+      let best = 'top'
+      let bestRatio = -1
+      for (const s of DOTS) {
+        const r = ratios[s.id] ?? 0
+        if (r > bestRatio) { bestRatio = r; best = s.id }
+      }
+      setActive(best)
+    }
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) ratios[e.target.id] = e.isIntersecting ? e.intersectionRatio : 0
+        pick()
+      },
+      { rootMargin: '-40% 0px -40% 0px', threshold: [0, 0.25, 0.5, 0.75, 1] }
+    )
+    DOTS.map((s) => document.getElementById(s.id)).filter(Boolean).forEach((el) => io.observe(el))
+    return () => io.disconnect()
+  }, [])
+  return active
 }
 
 const FEATURES = [
@@ -45,7 +82,7 @@ function FeatureViz({ viz }) {
   if (viz === 'teeth') {
     return (
       <div className="lp-viz-teeth" aria-hidden>
-        <b style={{ background: 'linear-gradient(135deg,#22c55e,#15803d)' }}>16</b>
+        <b style={{ background: 'linear-gradient(135deg,#10b981,#047857)' }}>16</b>
         <b style={{ background: 'linear-gradient(135deg,#f59e0b,#b45309)' }}>26</b>
         <b style={{ background: 'linear-gradient(135deg,#8b5cf6,#6d28d9)' }}>36</b>
       </div>
@@ -63,6 +100,8 @@ function FeatureViz({ viz }) {
 }
 
 export default function Landing() {
+  const { theme, toggleTheme } = useTheme()
+  const active = useActiveSection()
   const [procedures, setProcedures] = useState(demoProcedures)
   const [egg, setEgg] = useState(0)
   useEffect(() => {
@@ -75,12 +114,12 @@ export default function Landing() {
       <header className="lp-nav">
         <span className="lp-brand"><DentalOSLogo size={24} /></span>
         <nav><a href="#features">Features</a><a href="#chart">Dental chart</a><a href="#pricing">Pricing</a><a href="#faq">FAQ</a></nav>
-        <div className="row"><Link className="btn ghost" to="/login">Sign in</Link><Link className="btn primary" to="/login">Get started</Link></div>
+        <div className="row"><button type="button" className="icon-btn" onClick={toggleTheme} aria-label="Toggle theme"><span className="theme-icon" key={theme}>{theme === 'light' ? <Moon size={17} /> : <Sun size={17} />}</span></button><Link className="btn ghost" to="/login">Sign in</Link><Link className="btn primary" to="/login">Get started</Link></div>
       </header>
 
-      <section className="lp-hero">
+      <section id="top" className="lp-hero">
         <div className="lp-hero-copy">
-          <h1 className="lp-hero-title">Modern software<br />for modern<br />dental clinics.</h1>
+          <h1 className="lp-hero-title">Modern software for<br /><span className="teal">modern dental clinics.</span></h1>
           <p className="lp-hero-sub">DentalOS unifies patients, appointments, clinical records, billing and inventory in one calm, fast workspace your whole team will actually enjoy using.</p>
           <Link className="lp-hero-btn" to="/login">Get started</Link>
         </div>
@@ -88,11 +127,19 @@ export default function Landing() {
           <HeroDental />
         </div>
         <nav className="lp-hero-dots" aria-label="Section shortcuts">
-          <a href="#" className="on" aria-label="Top" onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }) }} />
-          <a href="#features" aria-label="Features" />
-          <a href="#chart" aria-label="Dental chart" />
-          <a href="#pricing" aria-label="Pricing" />
-          <a href="#faq" aria-label="FAQ" />
+          {DOTS.map((s) => (
+            <a
+              key={s.id}
+              href={`#${s.id}`}
+              aria-label={s.label}
+              className={active === s.id ? 'on' : ''}
+              onClick={(e) => {
+                e.preventDefault()
+                if (s.id === 'top') window.scrollTo({ top: 0, behavior: 'smooth' })
+                else document.getElementById(s.id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+              }}
+            />
+          ))}
         </nav>
         <div className="lp-hero-arrows">
           <button type="button" onClick={() => window.scrollBy({ top: -window.innerHeight * 0.85, behavior: 'smooth' })} aria-label="Scroll up"><ArrowUp size={16} /></button>
@@ -137,18 +184,15 @@ export default function Landing() {
 
       <Journey />
 
-      <section id="chart" className="lp-section lp-split">
-        <div>
-          <span className="lp-eyebrow">Clinical charting</span>
-          <h2>See every tooth. Understand every treatment.</h2>
-          <p className="muted">Keep a complete visual history of every patient&apos;s dental health. Hover or tap any tooth below — then try the full chart inside the app.</p>
-          <ul className="lp-checks">{['Adult & pediatric numbering', 'Conditions: caries, filled, crown, root canal', 'Switch between arches', 'Works on tablet & mobile'].map((t) => <li key={t}><Check size={15} /> {t}</li>)}</ul>
-          <Link className="btn primary" to="/login">Try the live chart</Link>
-        </div>
-        <OdontogramPreview />
+      <section id="chart" className="lp-section">
+        <span className="lp-eyebrow">Clinical charting</span>
+        <h2>See every tooth. Understand every treatment.</h2>
+        <p className="muted">A complete anatomical arch — hover or tap any tooth to identify it, click to inspect it, then try the full chart inside the app.</p>
+        <ul className="lp-checks">{['Adult & pediatric numbering', 'Conditions: caries, filled, crown, root canal', 'Switch between arches', 'Works on tablet & mobile'].map((t) => <li key={t}><Check size={15} /> {t}</li>)}</ul>
+        <ChartExplore />
       </section>
 
-      <section className="lp-section">
+      <section id="pricing" className="lp-section">
         <span className="lp-eyebrow">Pricing</span>
         <h2>Transparent pricing in pesos.</h2>
         <div className="lp-prices">
@@ -210,6 +254,7 @@ export default function Landing() {
         </span>
         <span className="muted">Makati · Cebu · Davao · Photography via Unsplash</span>
       </footer>
+      <GameFab />
     </div>
   )
 }

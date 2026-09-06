@@ -7,6 +7,7 @@ use App\Models\AuditLog;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
@@ -33,6 +34,22 @@ class AuthController extends Controller
     {
         $request->user()->currentAccessToken()?->delete();
         return response()->json(['message' => 'Logged out.']);
+    }
+
+    public function uploadAvatar(Request $request)
+    {
+        $request->validate(['avatar' => 'required|image|max:2048']);
+        $user = $request->user();
+        foreach (glob(storage_path("app/public/avatars/{$user->id}.*")) ?: [] as $old) @unlink($old);
+        $path = $request->file('avatar')->storeAs('avatars', "{$user->id}.{$request->file('avatar')->extension()}", 'public');
+        $user->update(['avatar' => $path]);
+        return response()->json(['avatar' => $path]);
+    }
+
+    public function showAvatar(User $user)
+    {
+        if (!$user->avatar || !Storage::disk('public')->exists($user->avatar)) abort(404);
+        return response()->file(Storage::disk('public')->path($user->avatar));
     }
 
     public function registerPatient(Request $request)

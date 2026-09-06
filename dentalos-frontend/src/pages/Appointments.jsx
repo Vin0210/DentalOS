@@ -4,7 +4,7 @@ import { ChevronLeft, ChevronRight, Plus } from 'lucide-react'
 import api from '../services/api.js'
 import { demoAppointments } from '../services/mock.js'
 import { fmtTime } from '../utils/format.js'
-import { Button, Card, EmptyState, Modal, StatusBadge } from '../components/ui/Ui.jsx'
+import { Button, Card, EmptyState, Modal, Select, StatusBadge } from '../components/ui/Ui.jsx'
 import { AppointmentModal, patientLabel } from '../components/appointments/BookingForm.jsx'
 import { useTheme } from '../context/ThemeContext.jsx'
 import './Appointments.css'
@@ -23,6 +23,7 @@ export default function Appointments() {
   const [status, setStatus] = useState('')
   const [open, setOpen] = useState(false)
   const [detail, setDetail] = useState(null)
+  const [cancelTarget, setCancelTarget] = useState(null)
   const [dragId, setDragId] = useState(null)
   const [dropDay, setDropDay] = useState(null)
   const [prefill, setPrefill] = useState(null)
@@ -57,14 +58,9 @@ export default function Appointments() {
 
   const transition = async (appt, to) => {
     try {
-      if (to === 'cancelled') {
-        if (!confirm('Cancel this appointment?')) return
-        await api.post(`/appointments/${appt.id}/transition`, { status: 'cancelled' })
-      } else {
-        await api.post(`/appointments/${appt.id}/transition`, { status: to })
-      }
+      await api.post(`/appointments/${appt.id}/transition`, { status: to })
       toast(`Appointment → ${to.replace(/_/g, ' ')}.`, 'success')
-      setDetail(null); load()
+      setDetail(null); setCancelTarget(null); load()
     } catch (err) { toast(err?.response?.data?.message || 'Status change failed.', 'error') }
   }
 
@@ -93,7 +89,7 @@ export default function Appointments() {
   return (
     <div className="page">
       <div className="page-head">
-        <div><h1 className="page-title">Appointments</h1><p className="page-sub">{range[0]} → {range[1]} · {rows.length} appointments · drag cards between days</p></div>
+        <div><p className="eyebrow">Scheduling</p><h1 className="page-title">Appointments</h1><p className="page-sub">{range[0]} → {range[1]} · {rows.length} appointments · drag cards between days</p></div>
         <Button icon={<Plus size={15} />} onClick={() => setOpen(true)}>New appointment</Button>
       </div>
 
@@ -101,15 +97,15 @@ export default function Appointments() {
         <div className="cal-bar">
           <div className="row">
             <button className="icon-btn" onClick={() => shift(-1, view, anchor, setAnchor)} aria-label="Previous period"><ChevronLeft size={16} /></button>
-            <button className="btn secondary sm" onClick={() => setAnchor(new Date())}>Today</button>
+            <Button variant="secondary" size="sm" onClick={() => setAnchor(new Date())}>Today</Button>
             <button className="icon-btn" onClick={() => shift(1, view, anchor, setAnchor)} aria-label="Next period"><ChevronRight size={16} /></button>
             <b className="cal-range">{label(anchor, view)}</b>
           </div>
           <div className="row">
-            <div className="seg" role="tablist">{VIEWS.map((v) => <button key={v} role="tab" aria-selected={view === v} className={view === v ? 'active' : ''} onClick={() => setView(v)} style={{ textTransform: 'capitalize' }}>{v}</button>)}</div>
-            <select className="input" style={{ width: 150 }} value={status} onChange={(e) => setStatus(e.target.value)} aria-label="Filter status">
+            <div className="seg cap" role="tablist">{VIEWS.map((v) => <button key={v} role="tab" aria-selected={view === v} className={view === v ? 'active' : ''} onClick={() => setView(v)}>{v}</button>)}</div>
+            <Select className="filter-select" value={status} onChange={(e) => setStatus(e.target.value)} aria-label="Filter status">
               <option value="">All statuses</option>{STATUSES.map((s) => <option key={s} value={s}>{s.replace(/_/g, ' ')}</option>)}
-            </select>
+            </Select>
           </div>
         </div>
 
@@ -165,7 +161,7 @@ export default function Appointments() {
 
       <Modal open={!!detail} title={detail ? `${detail.patient?.first_name} ${detail.patient?.last_name} — ${detail.date}` : ''} onClose={() => setDetail(null)}>
         {detail && (
-          <div className="grid" style={{ gap: 12 }}>
+          <div className="grid gap-12">
             <div className="between"><StatusBadge value={detail.status} /><span className="small muted">{fmtTime(detail.start_time)}–{fmtTime(detail.end_time)}</span></div>
             <p className="small">{detail.procedure?.name || 'Visit'} · {detail.dentist?.user?.name || 'Unassigned dentist'}</p>
             <div className="flow">
@@ -175,8 +171,17 @@ export default function Appointments() {
             </div>
             <div className="row wrap">
               {NEXT[detail.status] && <Button onClick={() => transition(detail, NEXT[detail.status])}>{NEXT_LABEL[NEXT[detail.status]]}</Button>}
-              {!['completed','cancelled','no_show'].includes(detail.status) && <Button variant="secondary" onClick={() => transition(detail, 'cancelled')}>Cancel</Button>}
+              {!['completed','cancelled','no_show'].includes(detail.status) && <Button variant="secondary" onClick={() => setCancelTarget(detail)}>Cancel</Button>}
             </div>
+          </div>
+        )}
+      </Modal>
+
+      <Modal open={!!cancelTarget} title="Cancel appointment" onClose={() => setCancelTarget(null)}>
+        {cancelTarget && (
+          <div className="grid gap-12">
+            <p className="small">Cancel <b>{cancelTarget.patient?.first_name} {cancelTarget.patient?.last_name}</b> on <b>{cancelTarget.date}</b> at <b>{fmtTime(cancelTarget.start_time)}</b>? The slot opens up for other patients.</p>
+            <div className="between"><span /><div className="row"><Button variant="secondary" onClick={() => setCancelTarget(null)}>Keep appointment</Button><Button variant="danger" onClick={() => transition(cancelTarget, 'cancelled')}>Yes, cancel</Button></div></div>
           </div>
         )}
       </Modal>

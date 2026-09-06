@@ -1,9 +1,10 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import api from '../../services/api.js'
 import { initials, statusColor } from '../../utils/format.js'
 
-export function Button({ variant = 'primary', size = 'md', loading, disabled, icon, children, ...rest }) {
+export function Button({ variant = 'primary', size = 'md', loading, disabled, icon, children, className = '', ...rest }) {
   return (
-    <button className={`btn ${variant} ${size}${loading ? ' loading' : ''}`} disabled={disabled || loading} {...rest}>
+    <button className={`btn ${variant} ${size}${loading ? ' loading' : ''}${className ? ` ${className}` : ''}`} disabled={disabled || loading} {...rest}>
       {loading ? <span className="spinner" aria-hidden /> : icon}
       <span>{children}</span>
     </button>
@@ -36,10 +37,26 @@ export function StatusBadge({ value }) {
   return <span className={`badge ${statusColor(value)}`}>{label}</span>
 }
 
-export function Avatar({ name = '?', size = 36, color }) {
+export function Avatar({ name = '?', size = 36, color, src }) {
+  const [failedSrc, setFailedSrc] = useState(null)
+  const [url, setUrl] = useState(undefined)
+  // Remote avatar files need the auth token, which <img> can't send —
+  // fetch as a blob (axios attaches it) instead of hot-linking.
+  useEffect(() => {
+    if (!src || src.startsWith('data:')) return
+    let live = true
+    api.get(src, { responseType: 'blob' })
+      .then(({ data }) => { if (live) setUrl(URL.createObjectURL(data)) })
+      .catch(() => {})
+    return () => { live = false }
+  }, [src])
+  useEffect(() => () => { if (url?.startsWith('blob:')) URL.revokeObjectURL(url) }, [url])
+  const shown = src?.startsWith('data:') ? src : url
   return (
-    <span className="avatar" style={{ width: size, height: size, fontSize: size * 0.36, background: color }} aria-hidden>
-      {initials(name)}
+    <span className="avatar" style={{ width: size, height: size, fontSize: size * 0.36, background: color, overflow: 'hidden' }}>
+      {shown && failedSrc !== src
+        ? <img src={shown} alt="" aria-hidden onError={() => setFailedSrc(src)} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+        : <span aria-hidden>{initials(name)}</span>}
     </span>
   )
 }
@@ -54,9 +71,9 @@ export function Field({ label, error, hint, children, htmlFor }) {
   )
 }
 
-export function Input(props) { return <input className="input" {...props} /> }
-export function Select({ children, ...rest }) { return <select className="input" {...rest}>{children}</select> }
-export function Textarea(props) { return <textarea className="input" rows={3} {...props} /> }
+export function Input({ className = '', ...props }) { return <input className={`input${className ? ` ${className}` : ''}`} {...props} /> }
+export function Select({ children, className = '', ...rest }) { return <select className={`input${className ? ` ${className}` : ''}`} {...rest}>{children}</select> }
+export function Textarea({ className = '', ...props }) { return <textarea className={`input${className ? ` ${className}` : ''}`} rows={3} {...props} /> }
 
 export function Modal({ open, title, onClose, children, wide }) {
   const ref = useRef(null)
@@ -96,15 +113,33 @@ export function SkeletonList({ rows = 5 }) {
   return <div className="grid" style={{ gap: 10 }}>{Array.from({ length: rows }, (_, i) => <div key={i} className="skeleton" style={{ height: 46 }} />)}</div>
 }
 
-export function StatCard({ label, value, delta, icon, tone = 'primary' }) {
+// Landing tone names (teal/blue/violet/amber/rose/green); legacy names still accepted.
+const STAT_TONES = {
+  primary: 'tone-teal', teal: 'tone-teal',
+  success: 'tone-green', green: 'tone-green',
+  warning: 'tone-amber', amber: 'tone-amber',
+  danger: 'tone-rose', rose: 'tone-rose',
+  info: 'tone-blue', blue: 'tone-blue',
+  violet: 'tone-violet',
+}
+
+export function StatCard({ label, value, delta, icon, tone = 'teal' }) {
+  const cls = STAT_TONES[tone] || 'tone-teal'
   return (
-    <div className="stat">
+    <div className={`stat ${cls}`}>
       <div className="between">
         <span className="stat-label">{label}</span>
-        <span className={`stat-icon ${tone}`}>{icon}</span>
+        <span className="stat-icon">{icon}</span>
       </div>
       <div className="stat-value">{value}</div>
       {delta && <div className="stat-delta">{delta}</div>}
     </div>
   )
+}
+
+// Bordered record row for lists inside cards (replaces hand-rolled .between + inline styles).
+export function ListRow({ children, onClick, className = '' }) {
+  const cls = `list-row${onClick ? ' clickable' : ''}${className ? ` ${className}` : ''}`
+  if (onClick) return <button type="button" className={cls} onClick={onClick}>{children}</button>
+  return <div className={cls}>{children}</div>
 }

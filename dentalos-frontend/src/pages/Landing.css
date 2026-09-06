@@ -1,4 +1,4 @@
-.landing { background: var(--surface); color: var(--text-primary); }
+.landing { background: var(--surface); color: var(--text-primary); overflow-x: clip; }
 .lp-nav { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 16px 40px; position: sticky; top: 0; background: color-mix(in srgb, var(--surface) 88%, transparent); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); z-index: 50; }
 .lp-brand { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 19px; }
 .lp-nav nav { display: flex; gap: 22px; }
@@ -33,7 +33,7 @@
 .lp-stat span { display: block; color: var(--text-secondary); font-size: 13px; font-weight: 600; margin-top: 2px; }
 @media (max-width: 960px) { .lp-stats { grid-template-columns: 1fr 1fr; padding: 28px 20px 0; } }
 .lp-section { max-width: 1200px; margin: 0 auto; padding: 48px 40px 8px; }
-.lp-section h2 { font-size: 34px; letter-spacing: -0.02em; max-width: 640px; }
+.lp-section h2 { font-size: clamp(28px, 4vw, 34px); letter-spacing: -0.02em; max-width: 640px; }
 .lp-section > .muted { margin-top: 10px; max-width: 640px; font-size: 16px; }
 .lp-features { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 20px; }
 .lp-feature { border: 1px solid var(--border); border-radius: 16px; padding: 22px; background: var(--surface); transition: transform 180ms ease, box-shadow 180ms ease; }
@@ -63,7 +63,7 @@
 .lp-faq details { border: 1px solid var(--border); border-radius: 12px; padding: 14px 18px; background: var(--surface); }
 .lp-faq summary { font-weight: 700; cursor: pointer; } .lp-faq p { color: var(--text-secondary); margin-top: 8px; }
 .lp-cta { text-align: center; padding: 64px 24px; background: linear-gradient(135deg, #0f766e, #0b3b38); color: #fff; margin-top: 48px; }
-.lp-cta h2 { font-size: 38px; } .lp-cta p { opacity: 0.85; margin: 8px 0 16px; }
+.lp-cta h2 { font-size: clamp(28px, 6vw, 38px); } .lp-cta p { opacity: 0.85; margin: 8px 0 16px; }
 
 /* Photo gallery marquee */
 .lp-gallery { overflow: hidden; padding: 36px 0 0; -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent); mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent); }
@@ -79,16 +79,42 @@
   .lp-gallery { overflow-x: auto; -webkit-mask-image: none; mask-image: none; }
 }
 
-/* CTA with photo backdrop */
+/* Explore mode — full-width anatomical arch + info panel (landing) */
+.lp-explore { margin-top: 26px; }
+.lp-explore-panel { display: grid; grid-template-columns: 150px 1fr; gap: 22px; align-items: center; background: var(--surface); border: 1px solid var(--border); border-radius: 18px; padding: 20px 24px; margin-top: 14px; box-shadow: var(--shadow); overflow: hidden; }
+.lp-explore-panel h3 { margin: 0 0 4px; font-size: 20px; letter-spacing: -0.01em; }
+.lp-explore-panel .eyebrow { margin-bottom: 6px; }
+.lp-explore-panel p { margin: 0; color: var(--text-secondary); font-size: 14px; line-height: 1.6; max-width: 560px; }
+.lp-explore-panel .lp-hero-btn { margin-top: 14px; }
+.lp-explore-hint-icon { width: 52px; height: 52px; border-radius: 16px; background: var(--primary-soft); color: var(--primary); display: inline-flex; align-items: center; justify-content: center; justify-self: center; }
+@media (max-width: 640px) { .lp-explore-panel { grid-template-columns: 1fr; justify-items: center; text-align: center; } .lp-explore-panel p { max-width: none; } }
 .lp-cta-photo { position: relative; overflow: hidden; }
 .lp-cta-photo::before { content: ''; position: absolute; inset: 0; background: url('/images/dentist.jpg') center 30% / cover no-repeat; opacity: 0.14; }
 .lp-cta-photo .lp-cta-inner { position: relative; z-index: 1; }
-.lp-footer { display: flex; justify-content: space-between; padding: 22px 40px; background: var(--background); border-top: 1px solid var(--border); font-size: 13px; }
+.lp-footer { display: flex; justify-content: space-between; align-items: center; gap: 10px 20px; flex-wrap: wrap; padding: 22px 40px; background: var(--background); border-top: 1px solid var(--border); font-size: 13px; }
 @media (max-width: 960px) {
   .lp-hero, .lp-split { grid-template-columns: 1fr; }
   .lp-hero h1 { font-size: 38px; } .lp-nav nav { display: none; }
   .lp-features, .lp-prices, .lp-quotes { grid-template-columns: 1fr; }
   .lp-nav, .lp-hero, .lp-section { padding-left: 20px; padding-right: 20px; }
+}
+
+/* Small phones: keep the sticky nav + footer on one line, slim the gallery */
+@media (max-width: 560px) {
+  .lp-nav { padding: 12px 14px; gap: 10px; }
+  .lp-nav .row { gap: 8px; margin-top: 0; }
+  .lp-nav .btn.ghost { display: none; }
+  .lp-nav .btn { padding: 8px 14px; font-size: 12.5px; }
+  .lp-brand { font-size: 17px; }
+  .lp-hero-copy { padding: 16px 20px 8px; }
+  .lp-stat b { font-size: 28px; }
+  .lp-logos { gap: 10px 22px; }
+  .lp-shot { width: 272px; }
+  .lp-price, .lp-quote, .lp-feature { padding: 20px; }
+  .lp-amount { font-size: 30px; }
+  .lp-cta { padding: 52px 20px; margin-top: 36px; }
+  .lp-footer { padding: 18px 20px; font-size: 12.5px; }
+  .lp-faq details { padding: 12px 14px; }
 }
 
 /* ── Landing visual upgrades ── */
@@ -123,7 +149,7 @@
 .lp-viz { display: flex; gap: 8px; margin-top: 16px; flex-wrap: wrap; }
 .lp-avatar { width: 34px; height: 34px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 11.5px; font-weight: 800; color: #fff; background: linear-gradient(135deg, var(--primary-light), var(--primary)); border: 2px solid var(--surface); box-shadow: var(--shadow-sm); }
 .lp-avatar.alt { background: linear-gradient(135deg, var(--violet), #6d28d9); }
-.lp-avatar.alt2 { background: linear-gradient(135deg, var(--info), #1d4ed8); }
+.lp-avatar.alt2 { background: linear-gradient(135deg, var(--info), #0369a1); }
 .lp-avatar.more { background: var(--surface-secondary); color: var(--text-secondary); border: 2px dashed var(--border-strong); box-shadow: none; }
 .lp-viz-teeth { display: flex; gap: 10px; margin-top: 16px; }
 .lp-viz-teeth b { width: 44px; height: 54px; border-radius: 12px 12px 16px 16px; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800; color: #fff; box-shadow: var(--shadow-sm); transition: transform 200ms ease; }
@@ -131,7 +157,7 @@
 .lp-viz-stock { display: flex; flex-direction: column; gap: 10px; margin-top: 16px; max-width: 340px; }
 .lp-viz-stock span { display: flex; align-items: center; gap: 10px; font-size: 12px; font-weight: 700; color: var(--text-secondary); }
 .lp-viz-stock .bar { flex: 1; height: 8px; border-radius: 4px; background: var(--surface-secondary); overflow: hidden; }
-.lp-viz-stock .bar i { display: block; height: 100%; border-radius: 4px; background: linear-gradient(90deg, var(--success), #16a34a); }
+.lp-viz-stock .bar i { display: block; height: 100%; border-radius: 4px; background: linear-gradient(90deg, var(--success), #059669); }
 .lp-viz-stock .bar.low i { background: linear-gradient(90deg, var(--warning), var(--danger)); animation: lp-blink 1.6s ease-in-out infinite; }
 @keyframes lp-blink { 50% { opacity: 0.55; } }
 @media (prefers-reduced-motion: reduce) { .lp-viz-stock .bar.low i { animation: none; } }
@@ -171,19 +197,20 @@
 }
 
 /* ── Reference-style full-bleed hero ── */
-.lp-hero { position: relative; display: grid; grid-template-columns: 1fr 1fr; gap: 0; padding: 96px 0 0; min-height: 92vh; max-width: none; margin: 0; align-items: stretch; overflow: hidden; background: #f2efe7; }
+.lp-hero { position: relative; display: grid; grid-template-columns: 1fr 1fr; gap: 0; padding: 96px 0 0; min-height: 92vh; max-width: none; margin: 0; align-items: stretch; overflow: hidden; background: var(--background); }
 [data-theme='dark'] .lp-hero { background: #0c1412; }
 .lp-hero-copy { position: relative; z-index: 3; align-self: center; padding: 0 40px 64px 72px; max-width: 620px; margin-left: auto; }
-.lp-hero .lp-hero-title { font-size: 58px; line-height: 1.03; letter-spacing: 0.01em; text-transform: uppercase; font-weight: 800; color: var(--primary); margin: 0 0 22px; }
+.lp-hero .lp-hero-title { font-size: 58px; line-height: 1.03; letter-spacing: 0.01em; text-transform: uppercase; font-weight: 800; color: var(--text-primary); margin: 0 0 22px; }
+.lp-hero .lp-hero-title .teal { color: var(--primary); }
 .lp-hero .lp-hero-sub { font-size: 14.5px; line-height: 1.75; color: var(--primary); opacity: 0.85; max-width: 380px; margin: 0 0 26px; }
 .lp-hero-btn { display: inline-flex; align-items: center; border: 1.5px solid var(--primary); color: var(--primary); padding: 9px 18px; font-size: 12px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; transition: all 0.2s ease; }
 .lp-hero-btn:hover { background: var(--primary); color: #fff; text-decoration: none; }
 .lp-hero-stage { position: relative; min-height: 580px; }
-.lp-hero-dots { position: absolute; left: 28px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 11px; z-index: 3; }
+.lp-hero-dots { position: fixed; left: 28px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 11px; z-index: 40; }
 .lp-hero-dots a { width: 9px; height: 9px; border-radius: 50%; border: 1.5px solid var(--primary); opacity: 0.45; transition: all 0.2s ease; }
 .lp-hero-dots a:hover, .lp-hero-dots a.on { opacity: 1; background: var(--primary); }
-.lp-hero-arrows { position: absolute; left: 16px; bottom: 26px; display: flex; flex-direction: column; gap: 10px; z-index: 3; }
-.lp-hero-arrows button { width: 42px; height: 42px; border-radius: 50%; border: 1.5px solid var(--primary); background: transparent; color: var(--primary); cursor: pointer; display: inline-flex; align-items: center; justify-content: center; transition: all 0.2s ease; }
+.lp-hero > .lp-hero-arrows { position: fixed; left: 16px; bottom: 26px; display: flex; flex-direction: column; gap: 10px; z-index: 40; }
+.lp-hero-arrows button { width: 42px; height: 42px; border-radius: 50%; border: 1.5px solid var(--primary); background: color-mix(in srgb, var(--surface) 78%, transparent); backdrop-filter: blur(6px); color: var(--primary); cursor: pointer; display: inline-flex; align-items: center; justify-content: center; transition: all 0.2s ease; }
 .lp-hero-arrows button:hover { background: var(--primary); color: #fff; }
 
 @media (max-width: 1100px) {
@@ -192,12 +219,15 @@
 }
 
 @media (max-width: 960px) {
-  .lp-hero { grid-template-columns: 1fr; padding-top: 84px; min-height: 0; }
-  .lp-hero-copy { padding: 36px 24px 10px; margin-left: 0; max-width: 100%; }
-  .lp-hero .lp-hero-title { font-size: 38px; }
-  .lp-hero-stage { min-height: 440px; order: 2; }
-  .lp-hero-dots, .lp-hero-arrows { display: none; }
-  .hero-tilt { width: min(74vw, 380px); }
+  .lp-hero { grid-template-columns: 1fr; padding-top: 20px; min-height: 0; }
+  .lp-hero-copy { padding: 16px 24px 8px; margin-left: 0; max-width: 100%; }
+  .lp-hero .lp-hero-title { font-size: clamp(30px, 9vw, 38px); }
+  .lp-hero .lp-hero-sub { font-size: 14px; margin: 0 0 18px; }
+  /* stage fills the remaining first-viewport space; tooth never exceeds it */
+  .lp-hero-stage { min-height: 440px; min-height: min(52svh, 440px); order: 2; }
+  .hero-tilt { width: min(74vw, 380px); width: min(74vw, 44svh, 380px); }
+  .lp-hero-dots, .lp-hero > .lp-hero-arrows { display: none; }
+  .lp-hero h1 { font-size: 38px; } .lp-nav nav { display: none; }
 }
 
 /* ── Hero polish: micro-interactions (plain CSS, reduced-motion aware) ── */

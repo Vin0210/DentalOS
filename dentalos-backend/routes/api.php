@@ -17,6 +17,8 @@ Route::post('/auth/register', [AuthController::class, 'registerPatient']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/auth/me', [AuthController::class, 'me']);
     Route::post('/auth/logout', [AuthController::class, 'logout']);
+    Route::post('/auth/avatar', [AuthController::class, 'uploadAvatar']);
+    Route::get('/avatar/{user}', [AuthController::class, 'showAvatar']);
 
     Route::apiResource('patients', PatientController::class);
     Route::get('/patients/{patient}/timeline', [PatientController::class, 'timeline']);

@@ -1,15 +1,16 @@
-/* DentalOS design tokens — single source of truth for theme */
+/* DentalOS design tokens — Arctic Teal + Deep Navy: white/slate/mint surfaces,
+   deep teal brand (8%), fresh mint + soft cyan accents (2%). */
 :root {
   --primary: #0f766e;
-  --primary-hover: #0d655f;
-  --primary-light: #14b8a6;
+  --primary-hover: #115e59;
+  --primary-light: #2dd4bf;
   --primary-soft: #ccfbf1;
   --primary-ink: #ffffff;
 
   --background: #f8fafc;
   --surface: #ffffff;
-  --surface-secondary: #f1f5f9;
-  --surface-hover: #f8fafc;
+  --surface-secondary: #f0fdfa;
+  --surface-hover: #f0fdfa;
   --border: #e2e8f0;
   --border-strong: #cbd5e1;
 
@@ -17,16 +18,24 @@
   --text-secondary: #64748b;
   --text-muted: #94a3b8;
 
-  --success: #22c55e;
-  --success-soft: #dcfce7;
+  --success: #10b981;
+  --success-soft: #d1fae5;
   --warning: #f59e0b;
   --warning-soft: #fef3c7;
-  --danger: #ef4444;
-  --danger-soft: #fee2e2;
-  --info: #3b82f6;
-  --info-soft: #dbeafe;
+  --danger: #f43f5e;
+  --danger-soft: #ffe4e6;
+  --info: #0ea5e9;
+  --info-soft: #e0f2fe;
   --violet: #8b5cf6;
   --violet-soft: #ede9fe;
+
+  /* Natural ivory enamel for tooth visualization (never plastic white) */
+  --tooth-base: #f8f5ee;
+  --tooth-highlight: #fffefa;
+  --tooth-shadow: #d9d4c8;
+
+  /* Landing accent aliases — mint + purple highlights from the hero artwork */
+  --mint: #2dd4bf;
 
   --font: 'Inter', 'Manrope', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --radius-sm: 8px;
@@ -40,13 +49,17 @@
   --sidebar-collapsed: 72px;
   --topbar-h: 64px;
   --transition: 180ms ease;
+
+  /* Landing visual language — shared with the app shell */
+  --grad-brand: linear-gradient(92deg, var(--primary-light), var(--violet) 55%, var(--info));
+  --glow-teal: 0 10px 24px rgba(15, 118, 110, 0.28);
 }
 
 [data-theme='dark'] {
   --primary: #14b8a6;
   --primary-hover: #2dd4bf;
   --primary-soft: rgba(20, 184, 166, 0.14);
-  --background: #0b1220;
+  --background: #0c1412;
   --surface: #111a2e;
   --surface-secondary: #182540;
   --surface-hover: #1a2745;
@@ -55,12 +68,13 @@
   --text-primary: #e8eef7;
   --text-secondary: #93a1b8;
   --text-muted: #64748b;
-  --success-soft: rgba(34, 197, 94, 0.14);
+  --success-soft: rgba(16, 185, 129, 0.14);
   --warning-soft: rgba(245, 158, 11, 0.15);
-  --danger-soft: rgba(239, 68, 68, 0.15);
-  --info-soft: rgba(59, 130, 246, 0.16);
+  --danger-soft: rgba(244, 63, 94, 0.15);
+  --info-soft: rgba(14, 165, 233, 0.16);
   --violet-soft: rgba(139, 92, 246, 0.16);
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
   --shadow: 0 1px 3px rgba(0, 0, 0, 0.4), 0 4px 14px rgba(0, 0, 0, 0.35);
   --shadow-lg: 0 10px 36px rgba(0, 0, 0, 0.5);
+  --glow-teal: 0 10px 26px rgba(20, 184, 166, 0.32);
 }

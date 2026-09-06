@@ -1,5 +1,5 @@
 .fact { display: flex; align-items: center; gap: 14px; background: linear-gradient(135deg, var(--primary-soft), var(--surface)); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 16px 18px; }
-.fact-tooth { width: 44px; height: 44px; border-radius: 14px; background: var(--primary); display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: var(--shadow); animation: floaty-sm 5s ease-in-out infinite; }
+.fact-tooth { width: 44px; height: 44px; border-radius: 14px; background: var(--primary); display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: var(--shadow); }
 .fact-tooth svg { width: 22px; height: auto; }
 .fact-body { flex: 1; min-width: 0; }
 .fact-kicker { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.07em; color: var(--primary); }

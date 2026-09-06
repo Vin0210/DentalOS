@@ -1,12 +1,14 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { AnimatePresence, motion, useAnimationControls } from 'framer-motion'
-import { ArrowRight, Check, Eye, EyeOff, Info, Lock, Mail } from 'lucide-react'
+import { ArrowRight, Check, Eye, EyeOff, Info, Lock, Mail, Moon, Sun } from 'lucide-react'
 import { useAuth } from '../context/AuthContext.jsx'
+import { useTheme } from '../context/ThemeContext.jsx'
 import { friendlyError } from '../services/api.js'
 import { EASE } from '../components/motion/Motion.jsx'
 import DentalOSLogo from '../components/brand/DentalOSLogo.jsx'
 import DentalVisual from '../components/login/DentalVisual.jsx'
+import { Button } from '../components/ui/Ui.jsx'
 import './Auth.css'
 
 const DEMO_ACCOUNTS = [['admin', 'Admin'], ['dentist', 'Dentist'], ['reception', 'Reception'], ['accounting', 'Accounting'], ['patient', 'Patient']]
@@ -24,6 +26,7 @@ function GoogleIcon() {
 
 export default function Login() {
   const { login } = useAuth()
+  const { theme, toggleTheme } = useTheme()
   const nav = useNavigate()
   const [form, setForm] = useState({ email: 'admin@dentalos.ph', password: 'password' })
   const [error, setError] = useState('')
@@ -60,6 +63,7 @@ export default function Login() {
       </main>
 
       <motion.section className="auth-form-side" initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.25, ease: EASE }}>
+        <button type="button" className="icon-btn auth-theme" onClick={toggleTheme} aria-label="Toggle theme"><span className="theme-icon" key={theme}>{theme === 'light' ? <Moon size={17} /> : <Sun size={17} />}</span></button>
         <div className="auth-form-inner">
           <div className="auth-brand"><DentalOSLogo size={30} animated /></div>
           <h1>Welcome back</h1>
@@ -118,9 +122,7 @@ export default function Login() {
             </motion.div>
 
             <div className="auth-divider">or continue with</div>
-            <button type="button" className="btn secondary lg auth-google" onClick={() => setNote("Google sign-in isn't connected in the demo — use a demo account below.")}>
-              <GoogleIcon /> Continue with Google
-            </button>
+            <Button type="button" variant="secondary" size="lg" className="auth-google" icon={<GoogleIcon />} onClick={() => setNote("Google sign-in isn't connected in the demo — use a demo account below.")}>Continue with Google</Button>
 
             <div className="demo-accounts">
               <p className="small muted">One-click demo accounts · password <code>password</code></p>

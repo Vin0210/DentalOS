@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Appointment;
+use App\Models\AppNotification;
 use App\Models\Branch;
 use App\Models\Clinic;
 use App\Models\Dentist;
@@ -150,5 +151,7 @@ class DentalOsSeeder extends Seeder
         foreach ($items as [$n, $sku, $unit, $qty, $min, $cost]) {
             InventoryItem::create(['branch_id' => $branches[0]->id, 'category_id' => $invCat->id, 'supplier_id' => $sup->id, 'name' => $n, 'sku' => $sku, 'unit' => $unit, 'quantity' => $qty, 'min_stock' => $min, 'cost' => $cost, 'price' => $cost * 1.3, 'expires_at' => str_contains($sku, 'ANE') ? now()->addDays(45)->toDateString() : null]);
         }
+
+        $this->call(NotificationSeeder::class);
     }
 }
