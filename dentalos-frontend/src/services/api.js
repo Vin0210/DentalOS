@@ -1,7 +1,9 @@
 import axios from 'axios'
 
+const API_BASE = (import.meta.env.VITE_API_URL || '/api').replace(/\/$/, '')
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || '/api',
+  baseURL: API_BASE,
   headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
   timeout: 15000,
 })
@@ -42,8 +44,8 @@ export function friendlyError(err, fallback = 'Something went wrong. Please try 
 }
 
 // Profile photos are served through the API (same origin in prod, Vite-proxied in dev).
-// Relative path lets axios resolve it against the configured baseURL.
-export const avatarUrl = (userId) => `/avatar/${userId}`
+// Uses API_BASE so split-domain deploys (Vercel + Render) still resolve correctly.
+export const avatarUrl = (userId) => `${API_BASE}/avatar/${userId}`
 export const resolveAvatar = (user) => {
   if (!user?.avatar) return undefined
   return String(user.avatar).startsWith('data:') ? user.avatar : avatarUrl(user.id)

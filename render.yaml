@@ -1,0 +1,24 @@
+# Render free-tier blueprint for DentalOS backend (Laravel).
+# Create DB separately on Supabase Free (recommended - persists), NOT Render free DB (expires in 30 days).
+services:
+  - type: web
+    name: dentalos-api
+    runtime: docker
+    rootDir: dentalos-backend
+    dockerfilePath: ./Dockerfile
+    plan: free
+    healthCheckPath: /up
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: false
+      - key: LOG_LEVEL
+        value: error
+      - key: DB_CONNECTION
+        value: pgsql
+      # Set these in Render dashboard:
+      # APP_KEY (run: php artisan key:generate --show, copy output)
+      # APP_URL (https://dentalos-api.onrender.com)
+      # FRONTEND_URL (https://your-frontend.vercel.app)
+      # DB_URL or DB_HOST/DB_PORT/DB_DATABASE/DB_USERNAME/DB_PASSWORD (from Supabase)
